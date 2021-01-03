@@ -4,6 +4,7 @@ import { Input, Button, Row, Col } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { setTotalSeats } from '../redux/actions/common'
 import _ from 'lodash';
+import moment from 'moment';
 
 let totalTotalSeatsObj = {};
 const CreateEvent = () => {
@@ -28,49 +29,49 @@ const CreateEvent = () => {
     let eventAPI = new EventAPI();
     setEventAPI(eventAPI)
     await eventAPI.init();
-    console.log('hi')
-
-    let detailObj = {
-      name: '張敬軒盛樂演唱會',
-      venue: '紅磡體育館',
-      contact: '+852-56281088',
-      email: 'timchengy@gmail.com',
-      startDate: 1607701444,
-      endDate: 1607701444,
-      need_kyc: true,
-      country: 'HK',
-      district: 'Hung Hom',
-      fullAddress: 'Hong Kong Coliseum',
-      company: 'XXX Company',
-      description: 'XXXX Description',
-      totalSupply: 5000,
-      performer: '張敬軒',
-      category: 'sing',
-      startDateSell: 1607701444,
-      endDateSell: 1607701444
-    };
 
     // let detailObj = {
-		// 	name: 'TEST 09 - Justin Bieber World Tour 2021',
-		// 	venu: 'Las Vegas, NV, USA',
-		// 	contact: '+1-12345678',
-		// 	email: 'justiner-service@gmail.com',
-		// 	startDate: 1610236800,
-		// 	endDate: 1610244000,
-		// 	need_kyc: true,
-		// 	country: 'USA',
-		// 	district: 'Las Vegas',
-		// 	fullAddress: 'Las Vegas, NV, USA',
-		// 	company: 'XXX Company',
-		// 	description: 'XXXX Description',
-		// 	totalSupply: 5000,
-		// 	performer: 'Justin Bieber',
-		// 	category: 'sing',
-		// 	startDateSell: 1609422864,
-		// 	endDateSell: 1610064000,
-		// };
+    //   name: '張敬軒盛樂演唱會',
+    //   venue: '紅磡體育館',
+    //   contact: '+852-56281088',
+    //   email: 'timchengy@gmail.com',
+    //   startDate: 1607701444,
+    //   endDate: 1607701444,
+    //   need_kyc: true,
+    //   country: 'HK',
+    //   district: 'Hung Hom',
+    //   fullAddress: 'Hong Kong Coliseum',
+    //   company: 'XXX Company',
+    //   description: 'XXXX Description',
+    //   totalSupply: 5000,
+    //   performer: '張敬軒',
+    //   category: 'sing',
+    //   startDateSell: 1607701444,
+    //   endDateSell: 1607701444
+    // };
 
-    // await eventAPI.createEvent(detailObj);
+    let detailObj = {
+			name: 'TEST 10 - Justin Bieber World Tour 2021',
+			venu: 'Las Vegas, NV, USA',
+			contact: '+1-12345678',
+			email: 'justiner-service@gmail.com',
+			startDate: 1610236800,
+			endDate: moment().unix(),
+			need_kyc: true,
+			country: 'USA',
+			district: 'Las Vegas',
+			fullAddress: 'Las Vegas, NV, USA',
+			company: 'XXX Company',
+			description: 'XXXX Description',
+			totalSupply: 5000,
+			performer: 'Justin Bieber',
+			category: 'sing',
+			startDateSell: 1609422864,
+			endDateSell: moment().unix(),
+		};
+
+    // await eventAPI.autoSignEventTransaction(detailObj);
+
     let ticket = await eventAPI.getTicketAll();
     let result =  await eventAPI.getEvent(0);
     console.log(ticket)
@@ -108,7 +109,9 @@ const CreateEvent = () => {
           row,
           column,
           seat: `ROW ${row} - COL ${column}`,
-          available: true
+          available: true,
+          price: 380,
+          type: 'normal'
         }
         columnsObj[column] = obj;
 
@@ -219,7 +222,7 @@ const CreateEvent = () => {
       </Col>
       <Col span={18}>{buttonElements}</Col>
       <Col span={18}>{seatElements}</Col>
-      <Row><Col><Button onClick={async () =>  eventAPI.createSeats(ticketList)}>Submit</Button></Col></Row>
+      <Row><Col><Button onClick={async () =>  eventAPI.autoCreateTickets(ticketList)}>Submit</Button></Col></Row>
     </Row>
   )
 }

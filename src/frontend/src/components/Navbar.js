@@ -40,23 +40,19 @@ const Navbar = (props) => {
             }} />
           </Col>
           <Col xs={6} sm={6} md={0} lg={0} xl={0}>
-            <Link href="/">
-              <a>
-                <Row justify="center">
-                  <Col style={{
-                    // width: '100%', minWidth: 120, paddingTop: 10, paddingBottom: 10, height: 60
-                  }}
-                  >
-                    <Logo />
-                  </Col>
-                </Row>
-              </a>
-            </Link>
+            <Row justify="center">
+              <Col style={{
+                // width: '100%', minWidth: 120, paddingTop: 10, paddingBottom: 10, height: 60
+              }}
+              >
+                <Logo />
+              </Col>
+            </Row>
           </Col>
         <Col xs={6} sm={6} md={0} lg={0} xl={0}>
             {/* <Row justify="end" align="middle">
               <Col>
-                <Link href="/shopping_cart" as="/shopping_cart">
+                <Link to="/shopping_cart" as="/shopping_cart">
                   <ShoppingCartOutlined style={{...styles.icon, marginRight: 0}} />
                 </Link>
               </Col>

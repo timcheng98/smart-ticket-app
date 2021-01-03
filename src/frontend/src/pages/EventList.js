@@ -364,7 +364,7 @@ export const EventsWithSlider = () => {
 		let eventItem = [];
 		eventArr.map(item => {
 			eventItem.push((
-				<div style={{ position: 'relative', width: 320, }}>
+				<div key={item} style={{ position: 'relative', width: 320, }}>
 			<EventItem event={item} padding={15} />
 			</div>
 			))

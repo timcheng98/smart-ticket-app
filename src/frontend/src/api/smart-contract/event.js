@@ -11,8 +11,8 @@ export class EventAPI {
 		this.web3 = {};
 		this.accounts = [];
 		this.address = '';
-		this.default_account = '0x39b7aaFeAd35FBaD75baDfD640780dE4dF981a57';
-		this.default_account_private_key = 'f01b7771873afe43e1017266d7c9b52ae5768147597da16c5825c3a7037fcb24'
+		this.default_account = '0x11aefC18c5ED4a9d7668B6Ef9cF0bE450aa43A03';
+		this.default_account_private_key = '6cac840b1b489ae59b62ccd3e2a6a48665c30aa6eae86af4aed8b23e3e89c44e'
 	}
 
 	getWeb3() {
@@ -20,7 +20,8 @@ export class EventAPI {
 	}
 
 	async init() {
-		await this.loadWeb3();
+		// await this.loadWeb3();
+		await this.loadRemoteWeb3();
 		await this.loadBlockchainData();
 		return true
 	}
@@ -38,6 +39,12 @@ export class EventAPI {
 				'Non-Ethereum browser detected. You should consider trying MetaMask!'
 			);
 		}
+	}
+
+	async loadRemoteWeb3() {
+		let provider = 'http://172.16.210.165:7545'
+		window.web3 = new Web3(provider);
+		this.web3 = window.web3;
 	}
 
 	async loadBlockchainData() {
@@ -141,7 +148,8 @@ export class EventAPI {
 		let total = await this.contract.methods.ticketCount.call({
 			from: this.accounts[0],
 		});
-		if (!total) return [];
+		// console.log(total)
+		// if (!total) return [];
 
 		for (let i = 0; i < this.web3.utils.hexToNumber(total._hex); i++) {
 			let data = await this.contract.methods
@@ -159,7 +167,7 @@ export class EventAPI {
 		return tickets;
 	}
 
-	async getOnSellTickets() {
+	async getOnSellTicketsAll(type) {
 		let total = await this.contract.methods.ticketCount.call({
 			from: this.accounts[0],
 		});
@@ -182,10 +190,35 @@ export class EventAPI {
 				};
 				onSellTicketIdArr.push(ticketDetail);
 			}
-		
 		}
 
+		return onSellTicketIdArr;
+	}
 
+	async getOnSellTicketsByArea(area) {
+		let total = await this.contract.methods.ticketCount.call({
+			from: this.accounts[0],
+		});
+
+		let onSellTicketIdArr = [];
+
+
+		for (let i = 0; i < this.web3.utils.hexToNumber(total._hex); i++) {
+			let data = await this.contract.methods
+				.tickets(i)
+				.call({ from: this.accounts[0] });
+			let ticketDetail = JSON.parse(data.ticketDetail);
+
+			let ticket_owner = await this.contract.methods.ownerOf(this.web3.utils.hexToNumber(data.ticketId._hex)).call({from: this.accounts[0]});
+			if (ticket_owner === this.default_account && area === ticketDetail.area) {
+				ticketDetail = {
+					...ticketDetail,
+					eventId: this.web3.utils.hexToNumber(data.eventId._hex),
+					ticketId: this.web3.utils.hexToNumber(data.ticketId._hex),
+				};
+				onSellTicketIdArr.push(ticketDetail);
+			}
+		}
 
 		return onSellTicketIdArr;
 	}
@@ -268,6 +301,14 @@ export class EventAPI {
 
 		// await Promise.all(ticketArr);
 		// console.log(' ----- finish ticket transaction ----- ')
+	}
+
+	async autoCreateTickets(_seats) {
+		let transaction = this.contract.methods
+		.mint(_seats);
+		return this.signTransaction(transaction, function(confirmedMessage) {
+			console.log(' ticket confirmedMessage', confirmedMessage);
+		}); 
 	}
 
 	async createSeats(_seats) {

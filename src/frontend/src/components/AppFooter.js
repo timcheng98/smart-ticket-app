@@ -49,16 +49,14 @@ const UpperFooter = (props) => {
   const shopInfo = () => {
     return (
       <div style={{paddingBottom: 30}}>
-        <Link to="/">
-          <a className="hyperlink">
+          <span  className="hyperlink">
             <div style={{
               width: '80%', maxWidth: 150, paddingBottom: 20, height: 120
             }}
             >
               <Logo />
             </div>
-          </a>
-        </Link>
+          </span>
       </div>
     )
   }
@@ -80,9 +78,9 @@ const UpperFooter = (props) => {
               key={item.category_id}
             >
               <Link to={item.url}>
-                <a className="hyperlink" style={{color: '#5a5a5a'}}>
+                <span  className="hyperlink" style={{color: '#5a5a5a'}}>
                   {item.name}
-                </a>
+                </span>
               </Link>
             </List.Item>
           )
@@ -112,7 +110,7 @@ const UpperFooter = (props) => {
             //         key={item.category_id}
             //         onClick={() => setLoginModalVisible(true)}
             //       >
-            //         <a className="hyperlink" style={{color: '#5a5a5a'}}>{item.name}</a>
+            //         <span  className="hyperlink" style={{color: '#5a5a5a'}}>{item.name}</span>
             //       </List.Item>
             //     )
             //   }
@@ -125,9 +123,9 @@ const UpperFooter = (props) => {
                 key={item.category_id}
               >
                 <Link to={item.url}>
-                  <a className="hyperlink" style={{color: '#5a5a5a'}}>
+                  <span  className="hyperlink" style={{color: '#5a5a5a'}}>
                     {item.name}
-                  </a>
+                  </span>
                 </Link>
               </List.Item>
             )
@@ -142,9 +140,9 @@ const UpperFooter = (props) => {
       <div>
         <Link to="/terms">
           <p style={{...styles.text}}>
-            <a className="hyperlink" style={{color: '#5a5a5a', fontWeight: 'bold', fontSize: 14}}>
+            <span  className="hyperlink" style={{color: '#5a5a5a', fontWeight: 'bold', fontSize: 14}}>
               terms_and_conditions
-            </a>
+            </span>
           </p>
         </Link>
         <List
@@ -157,7 +155,7 @@ const UpperFooter = (props) => {
             }}
             >
               <Link to={item.url}>
-                <a className="hyperlink" style={{color: '#5a5a5a'}}>{item.name}</a>
+                <span  className="hyperlink" style={{color: '#5a5a5a'}}>{item.name}</span>
               </Link>
             </List.Item>
           )}
@@ -214,22 +212,22 @@ const LowerFooter = (props) => {
           {/* Mobile */}
           <Col xs={24} sm={24} md={0} lg={0} style={{textAlign: 'left', paddingBottom: 10}}>
             <Link to="/terms">
-              <a
+              <span 
                 style={{
                   color: '#5a5a5a', fontSize: 14, marginBottom: 0, marginRight: 20
                 }}
                 className="hyperlink"
               >
                 terms_of_services
-              </a>
+              </span>
             </Link>
             <Link to="/privacy">
-              <a
+              <span 
                 className="hyperlink"
                 style={{color: '#5a5a5a', fontSize: 14, marginBottom: 0}}
               >
                 privacy_policy
-              </a>
+              </span>
             </Link>
           </Col>
           <Col xs={24} sm={24} md={0} lg={0} style={{textAlign: 'left'}}>
@@ -245,22 +243,22 @@ const LowerFooter = (props) => {
           </Col>
           <Col xs={0} sm={0} md={12} lg={12} style={{textAlign: 'right'}}>
             <Link to="/terms">
-              <a 
+              <span  
                 style={{
                   color: '#5a5a5a', fontSize: 14, marginBottom: 0, marginRight: 20
                 }}
                 className="hyperlink"
               >
                 terms_of_services
-              </a>
+              </span>
             </Link>
             <Link to="/privacy">
-              <a
+              <span 
                 className="hyperlink"
                 style={{color: '#5a5a5a', fontSize: 14, marginBottom: 0}}
               >
                 privacy_policy
-              </a>
+              </span>
             </Link>
           </Col>
           {/* Desktop */}

@@ -35,6 +35,14 @@ contract Ticket is ERC721Full, Event {
 
     // _ticketExists[_ticket] = true;
   }
+
+  function mintByEvent(string[] memory _tickets, uint256 _eventId) public {
+    for(uint index = 0; index < _tickets.length; index++) {
+      _mint(msg.sender, ticketCount);
+      tickets[ticketCount] = Ticket(_eventId, _tickets[index], ticketCount);
+      incrementCount();
+    }
+  }
   
   function multiTransferFrom(address _from, address _to, uint256[] memory _tokenIds) public {
     for(uint index = 0; index < _tokenIds.length; index++) {

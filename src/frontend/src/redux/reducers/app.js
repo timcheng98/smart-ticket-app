@@ -21,7 +21,7 @@ const appReducer = {
       case types.SET_TOTAL_SEATS: {
         state = {
           ...prevState,
-          totalSeats: {...state.totalSeats, ...action.data}
+          totalSeats: {...prevState.totalSeats, ...action.data}
         };
         break;
       }

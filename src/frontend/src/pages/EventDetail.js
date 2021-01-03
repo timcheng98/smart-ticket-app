@@ -143,7 +143,7 @@ const EventForm = ({ tickets, event }) => {
 
 	const setTicket = async () => {
 		await eventAPI.init();
-		let ticket = await eventAPI.getOnSellTickets();
+		let ticket = await eventAPI.getOnSellTicketsAll();
 		let events = await eventAPI.getEventAll();
 		let tickeyKey = _.keyBy(ticket, 'area');
 		let ticketArea = _.map(tickeyKey, 'area');
@@ -157,6 +157,7 @@ const EventForm = ({ tickets, event }) => {
 
 	const [stage, setStage] = useState('preview');
 	const [selectedTickets, setSelectedTickets] = useState({});
+	const [selectedArea, setSelectedArea] = useState('');
 
 	const onFinish = async (values) => {
 		console.log('onFinish() START');
@@ -250,6 +251,7 @@ const EventForm = ({ tickets, event }) => {
 				<AreaPicker
 					tickets={tickets}
 					setSelectedTickets={setSelectedTickets}
+					setSelectedArea={setSelectedArea}
 					selectedTickets={selectedTickets}
 					ticketAreaArr={ticketAreaArr}
 					// type={1}
@@ -272,7 +274,11 @@ const EventForm = ({ tickets, event }) => {
 							height: 50,
 							fontWeight: 'bold',
 						}}
-						onClick={() => console.log('submit', selectedTickets)}
+						onClick={async () => { 
+							let tickets = await eventAPI.getOnSellTicketsByArea(selectedArea);
+							let total = selectedTickets[selectedArea];
+							await eventAPI.autoSignTicketTransaction({tickets, total});			
+						}}
 					>
 						Checkout
 					</Button>
@@ -361,9 +367,9 @@ const Detail = ({ event }) => {
 								src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15282225.79979123!2d73.7250245393691!3d20.750301298393563!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30635ff06b92b791%3A0xd78c4fa1854213a6!2sIndia!5e0!3m2!1sen!2sin!4v1587818542745!5m2!1sen!2sin'
 								height='400'
 								width='100%'
-								allowfullscreen=''
+								// allowFullscreen=''
 								aria-hidden='false'
-								tabindex='0'
+								// tabindex='0'
 							></iframe>
 						</div>
 					</Col>
@@ -469,7 +475,7 @@ const RelatedEvents = () => {
 	);
 };
 
-const AreaPicker = ({ tickets, setSelectedTickets, selectedTickets, ticketAreaArr }) => {
+const AreaPicker = ({ tickets, setSelectedTickets, setSelectedArea, ticketAreaArr }) => {
 	const [areaPicked, setAreaPicked] = useState('');
 	const [totalTicketSelected, setTotalTicketSelected] = useState(0);
 
@@ -483,11 +489,8 @@ const AreaPicker = ({ tickets, setSelectedTickets, selectedTickets, ticketAreaAr
 					<Select
 						onChange={(selectedArea) => {
 							setAreaPicked((prev) => {
-								setSelectedTickets({
-									...selectedTickets,
-									[prev]: 0,
-									[selectedArea]: 1,
-								});
+								setSelectedTickets({[selectedArea]: 1});
+								setSelectedArea(selectedArea)
 								setTotalTicketSelected(1);
 								return selectedArea;
 							});
@@ -522,7 +525,6 @@ const AreaPicker = ({ tickets, setSelectedTickets, selectedTickets, ticketAreaAr
 								setTotalTicketSelected((prev) => {
 									if (prev === 0) return 0;
 									setSelectedTickets({
-										...selectedTickets,
 										[areaPicked]: --prev,
 									});
 									return prev;
@@ -535,7 +537,6 @@ const AreaPicker = ({ tickets, setSelectedTickets, selectedTickets, ticketAreaAr
 							onClick={() => {
 								setTotalTicketSelected((prev) => {
 									setSelectedTickets({
-										...selectedTickets,
 										[areaPicked]: ++prev,
 									});
 									return prev;
