@@ -11,8 +11,8 @@ export class EventAPI {
 		this.web3 = {};
 		this.accounts = [];
 		this.address = '';
-		this.default_account = '0x74Ef084b70bCd12E2388373D7c95540594D24C3e';
-		this.default_account_private_key = '0ca8017f130939d14d977573c0a79a8998d8d99b853e64d1c94ee6c4997111eb'
+		this.default_account = '0x39b7aaFeAd35FBaD75baDfD640780dE4dF981a57';
+		this.default_account_private_key = 'f01b7771873afe43e1017266d7c9b52ae5768147597da16c5825c3a7037fcb24'
 	}
 
 	getWeb3() {
@@ -60,6 +60,7 @@ export class EventAPI {
 		let total = await this.contract.methods.eventId.call({
 			from: this.accounts[0],
 		});
+		if (!total) return [];
 
 		console.log('total', total)
 		for (let i = 0; i < this.web3.utils.hexToNumber(total._hex); i++) {
@@ -140,6 +141,7 @@ export class EventAPI {
 		let total = await this.contract.methods.ticketCount.call({
 			from: this.accounts[0],
 		});
+		if (!total) return [];
 
 		for (let i = 0; i < this.web3.utils.hexToNumber(total._hex); i++) {
 			let data = await this.contract.methods
