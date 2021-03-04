@@ -6,12 +6,12 @@ import { createLogger } from 'redux-logger';
 
 import reducer from '../reducers';
 
-const loggerMiddleware = createLogger({ predicate: () => process.env.ENV });
+const loggerMiddleware = createLogger({ predicate: () => process.env.NODE_ENV === `development`});
 
 const enhancer = compose(
   applyMiddleware(
     thunk, // lets us dispatch() functions
-    // loggerMiddleware
+    loggerMiddleware
   ),
 );
 

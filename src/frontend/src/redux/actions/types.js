@@ -6,3 +6,5 @@ export const GET_SESSION = 'GET_SESSION';
 export const SET_TOTAL_SEATS = 'SET_TOTAL_SEATS';
 export const SET_EVENTS = 'SET_EVENTS';
 export const SET_DRAWER_VISIBLE = 'SET_DRAWER_VISIBLE';
+export const SET_CONFIG = 'SET_CONFIG';
+export const SET_AUTH = 'SET_AUTH';

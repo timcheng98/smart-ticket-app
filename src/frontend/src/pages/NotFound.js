@@ -1,18 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import Slider from 'react-slick';
+import React from 'react';
 import { Result, Button } from 'antd';
-import { useSelector, useDispatch } from 'react-redux';
-import { setTotalSeats } from '../redux/actions/common';
-import _ from 'lodash';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
-import {
-  ShareAltOutlined,
-  HeartFilled,
-  FireFilled,
-  SearchOutlined,
-} from '@ant-design/icons';
-import * as Service from '../core/Service'
 import AppLayout from '../components/AppLayout';
 import Content from '../components/Content';
 

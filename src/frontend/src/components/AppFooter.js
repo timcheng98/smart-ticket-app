@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  Layout, Row, Col, List, Affix, Button, BackTop, Modal
+  Layout, Row, Col, List, 
 } from 'antd';
-import { useSelector } from 'react-redux'
 import Content from './Content';
 import { Link } from 'react-router-dom';
 import Logo from './Logo'
@@ -281,14 +280,14 @@ const styles = {
     margin: 0,
     padding: '50px 5% 30px 5%',
     paddingBottom: 0,
-    backgroundColor: '#060a10'
+    backgroundColor: 'transparent'
     // backgroundColor: '#7e96b8',
   },
   lowerFooter: {
     textAlign: 'center',
     margin: 0,
     padding: '10px 5% 30px 5%',
-    backgroundColor: '#060a10'
+    backgroundColor: 'transparent'
     // marginLeft: '5%',
     // marginRight: '5%',
     // backgroundColor: '#7e96b8',

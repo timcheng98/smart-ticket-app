@@ -1,6 +1,6 @@
 
 body {
-  font-family: Roboto,serif;
+  font-family: Roboto, Microsoft JhengHei, serif;
 }
 
 .seat-table {
@@ -16,6 +16,65 @@ body {
 //   margin: 0 -20px;
 // } */
 
+.custom-input.ant-input, .custom-input, .custom-input input {
+  border: none;
+  border-bottom: 1px solid #fff;
+  background-color: transparent !important;
+  color: #fff !important;
+  font-weight: bold;
+}
+
+.custom-form label, .custom-form .ant-form-item-label {
+  text-align: left;
+  color: #fff;
+}
+
+.custom-form .ant-radio-inner {
+  background-color: transparent;
+  border-color: #fff;
+}
+
+.custom-form .ant-radio-input:focus + .ant-radio-inner {
+  border-color: #fff;
+}
+
+.custom-form .ant-radio-wrapper span{
+  color: #fff;
+}
+
+.custom-form .ant-radio-inner::after {
+  background-color: #fff;
+  border-color: #fff;
+}
+
+
+.ant-form-item-children-icon {
+  top: 40% !important
+}
+
+.custom-input svg {
+  color: #fff;
+}
+
+
+.custom-button {
+  color: #fff;
+  font-weight: 700;
+  background-color: transparent;
+  border-color: #fff;
+}
+
+.custom-button:hover {
+  color: #0e131d;
+  background-color: #fff;
+  border-color: transparent;
+}
+
+.custom-font {
+  font-size: 12px;
+  color: #fff;
+  transform: scale(0.5);
+}
 
 .ticket-col {
   color: #ffffff;

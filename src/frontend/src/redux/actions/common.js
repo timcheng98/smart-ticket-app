@@ -8,6 +8,23 @@ export function setClientData(clientData) {
   };
 }
 
+export function setConfig(appConfig) {
+  return {
+    type: types.SET_CONFIG,
+    data: appConfig,
+  };
+}
+
+
+export function setAuth(data) {
+  return {
+    type: types.SET_AUTH,
+    data: data,
+  };
+}
+
+
+
 export function setAppData(data) {
   return {
     type: types.APP_DATA,
@@ -36,9 +53,28 @@ export function setDrawerVisible(visible) {
   };
 }
 
+export function setUser(_user) {
+  let user = {
+    user_id: 0
+  }
+  if (_user.user_id > 0) {
+    user = {
+      ..._user,
+      is_user: true,
+    };
+  }
+  return {
+    type: types.SET_USER,
+    data: user,
+  };
+}
+
+
 export function setEvents(events) {
   return {
     type: types.SET_EVENTS,
     data: events,
   };
 }
+
+

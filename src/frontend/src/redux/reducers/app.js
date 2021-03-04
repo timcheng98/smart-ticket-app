@@ -3,11 +3,16 @@
 import * as types from '../actions/types';
 
 const initialState = {
+  auth: false,
   loading: false,
+  config: {
+    STATIC_SERVER_URL: null,
+  },
   data: {},
   totalSeats: {},
   events: false,
-  drawerVisible: false
+  drawerVisible: false,
+  user: {}
 };
 
 
@@ -18,10 +23,24 @@ const appReducer = {
     }
     let state;
     switch (action.type) {
+      case types.SET_AUTH: {
+        state = {
+          ...prevState,
+          totalSeats: action.data
+        };
+        break;
+      }
       case types.SET_TOTAL_SEATS: {
         state = {
           ...prevState,
           totalSeats: {...prevState.totalSeats, ...action.data}
+        };
+        break;
+      }
+      case types.SET_CONFIG: {
+        state = {
+          ...prevState,
+          config: action.data
         };
         break;
       }
@@ -36,6 +55,13 @@ const appReducer = {
         state = {
           ...prevState,
           drawerVisible: action.data
+        };
+        break;
+      }
+      case types.SET_USER: {
+        state = {
+          ...prevState,
+          user: action.data
         };
         break;
       }
