@@ -31,11 +31,11 @@ import {
 	PlusOutlined,
 	MinusOutlined,
 } from '@ant-design/icons';
+import * as Service from '../core/Service'
 import { EventsWithSlider } from './EventList';
 
 import Content from '../components/Content';
 import AppLayout from '../components/AppLayout';
-import { Badge } from 'react-bootstrap';
 
 const { Paragraph, Title, Text } = Typography;
 
@@ -53,9 +53,8 @@ const eventAPI = new EventAPI();
 
 const EventDetail = () => {
 	// const [eventAPI, setEventAPI] = useState(_eventAPI);
-	const [event, setEvent] = useState([]);
+	const [event, setEvent] = useState({});
 	const [loading, setLoading] = useState(true);
-	const [isInit, setInit] = useState(false);
 	const location = useLocation();
 	const history = useHistory();
 
@@ -63,25 +62,16 @@ const EventDetail = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		init();
-	}, []);
 
-	const init = async () => {
-		let isInit = await eventAPI.init();
-		if (_.isInteger(location.state.eventId)) {
-			let event = await eventAPI.getEvent(location.state.eventId);
-			setEvent(event);
-		} else {
-			return history.push('/')
-		}
-		setInit(isInit);
+		getInitialData();
+		setLoading(false)
+	}, [location]);
 
-		setLoading(false);
-
+	const getInitialData = async () => {
+		setEvent(location.state.event);
 	};
 
-
-	if (loading) return <h1>wait</h1>;
+	if (loading) return null;
 
 	return (
 		<AppLayout>
@@ -91,7 +81,7 @@ const EventDetail = () => {
 						align='middle'
 						style={{
 							backgroundImage:
-								"url('https://www.animephproject.com/wp-content/uploads/2016/01/cropped-revised-one-ok-rock-banner-1345-x-542.jpg')",
+								`url('${event.approval_doc}')`,
 							backgroundSize: 'cover',
 							backgroundRepeat: 'no-repeat',
 							minHeight: 500,
@@ -102,7 +92,7 @@ const EventDetail = () => {
 							<Row align='middle' justify='end'>
 								<Col span={6}>
 									<Card style={{ borderRadius: 25 }} hoverable>
-										<EventForm event={event} />
+										<EventForm event={location.state.event} />
 									</Card>
 								</Col>
 								<Col span={2}></Col>
@@ -136,23 +126,35 @@ const EventForm = ({ tickets, event }) => {
 	const [eventArr, setEventArr] = useState([]);
 	const [ticketAreaArr, setTicketAreaArr] = useState([]);
 	const [ticketArr, setTicketArr] = useState([]);
+	const location = useLocation();
+	const [loading, setLoading] = useState(false);
+
 
 	useEffect(() => {
+		setLoading(true)
 		setTicket();
+		setLoading(false)
 	}, []);
 
 	const setTicket = async () => {
-		await eventAPI.init();
-		let ticket = await eventAPI.getOnSellTicketsAll();
-		let events = await eventAPI.getEventAll();
-		let tickeyKey = _.keyBy(ticket, 'area');
-		let ticketArea = _.map(tickeyKey, 'area');
-		setTicketArr(ticket);
-		setTicketAreaArr(ticketArea);
+
+		let tickets = await Service.call('get', '/api/sc/event/ticket');
+		tickets = tickets[location.state.event.eventId]
+		let events = await Service.call('get', '/api/sc/event');
+		let ticketGroupPrice = _.groupBy(tickets, 'price');
+		let ticketsMapPrice = {};
+		_.each(ticketGroupPrice, (item, key) => {
+			let area = _.uniq((_.map(item, 'area')));
+			ticketsMapPrice[key] = area
+		})
+		let ticketArea = _.map(tickets, 'area');
+		ticketArea = _.uniq(ticketArea)
+		setTicketArr(tickets);
+		setTicketAreaArr(ticketsMapPrice);
 		setEventArr(events);
 
 	};
-	
+
 
 
 	const [stage, setStage] = useState('preview');
@@ -182,7 +184,7 @@ const EventForm = ({ tickets, event }) => {
 				justify='center'
 				layout='vertical'
 				gutter={[24, 0]}
-				// style={{ padding: 50 }}
+			// style={{ padding: 50 }}
 			>
 				<Col span={22}>
 					<Row>
@@ -191,12 +193,12 @@ const EventForm = ({ tickets, event }) => {
 						</Col>
 						<Col span={20}>
 							<span style={{ fontWeight: 'bold' }}>
-								{moment.unix(event.startDate).format('dddd, MMMM Do YYYY')}
+								{moment.unix(event.start_time).format('dddd, MMMM Do YYYY')}
 							</span>
 							<br />
 							<span>
-								FROM {moment.unix(event.startDate).format('HH:mm A')} <br/>
-								TO {moment.unix(event.endDate).format('HH:mm A')}
+								FROM {moment.unix(event.start_time).format('HH:mm A')} <br />
+								TO {moment.unix(event.end_time).format('HH:mm A')}
 							</span>
 						</Col>
 					</Row>
@@ -248,14 +250,18 @@ const EventForm = ({ tickets, event }) => {
 				<Col span={22} style={{ fontWeight: 'bold' }}>
 					Select Ticket
 				</Col>
-				<AreaPicker
-					tickets={tickets}
-					setSelectedTickets={setSelectedTickets}
-					setSelectedArea={setSelectedArea}
-					selectedTickets={selectedTickets}
-					ticketAreaArr={ticketAreaArr}
+				{_.map(ticketAreaArr, (item, price) => {
+					return <AreaPicker
+						tickets={tickets}
+						setSelectedTickets={setSelectedTickets}
+						setSelectedArea={setSelectedArea}
+						selectedTickets={selectedTickets}
+						ticketAreaArr={item}
+						price={price}
 					// type={1}
-				/>
+					/>
+				})}
+
 				{/* <AreaPicker
 					tickets={tickets}
 					setSelectedTickets={setSelectedTickets}
@@ -274,10 +280,10 @@ const EventForm = ({ tickets, event }) => {
 							height: 50,
 							fontWeight: 'bold',
 						}}
-						onClick={async () => { 
+						onClick={async () => {
 							let tickets = await eventAPI.getOnSellTicketsByArea(selectedArea);
 							let total = selectedTickets[selectedArea];
-							await eventAPI.autoSignTicketTransaction({tickets, total});			
+							await eventAPI.autoSignTicketTransaction({ tickets, total });
 						}}
 					>
 						Checkout
@@ -301,6 +307,8 @@ const EventForm = ({ tickets, event }) => {
 		);
 	}
 
+	if (loading) return null;
+
 	return (
 		<Row justify='center' layout='vertical' gutter={[24, 0]}>
 			<Spin spinning={true} />
@@ -312,19 +320,26 @@ const Detail = ({ event }) => {
 	return (
 		<Row gutter={[0, 0]} style={{ color: '#fff', marginTop: 50 }}>
 			<Col xs={24} sm={24} md={16} lg={16}>
-				<Row gutter={[24, 12]}>
+				<Row gutter={[24, 24]}>
 					<Col xs={24} sm={24} md={16} lg={20}>
-						<Title level={2} style={{ color: '#fff' }}>
+						<Title level={1} style={{ color: '#fff' }}>
+							{event.name}
+						</Title>
+						<Divider style={{ borderColor: '#fff', borderWidth: 4, borderRadius: 8 }} />
+					</Col>
+					<Col xs={24} sm={24} md={16} lg={20}>
+						<Title level={2} style={{ color: '#fff', }}>
 							Description
 						</Title>
 					</Col>
 					<Col xs={24} sm={24} md={16} lg={20}>
-						<Text style={{ color: '#fff' }}>
-							{event.description}
-						</Text>
+						<pre style={{ color: '#fff' }}>
+							{event.long_desc}
+						</pre>
 					</Col>
 
 				</Row>
+
 				<Row gutter={[24, 12]} style={{ color: '#fff', marginTop: 30 }}>
 					<Col xs={24} sm={24} md={16} lg={20}>
 						<Title level={3} style={{ color: '#fff' }}>
@@ -333,8 +348,8 @@ const Detail = ({ event }) => {
 					</Col>
 					<Col>
 						<Text style={{ color: '#fff' }}>
-							{moment.unix(event.startDate).format('YYYY-MM-DD - dddd, HH:mm a')} - 
-							{moment.unix(event.endDate).format('HH:mm a')}
+							{moment.unix(event.start_time).format('YYYY-MM-DD - dddd, HH:mm a')} -
+							{moment.unix(event.end_time).format('HH:mm a')}
 						</Text>
 					</Col>
 				</Row>
@@ -369,7 +384,7 @@ const Detail = ({ event }) => {
 								width='100%'
 								// allowFullscreen=''
 								aria-hidden='false'
-								// tabindex='0'
+							// tabindex='0'
 							></iframe>
 						</div>
 					</Col>
@@ -458,38 +473,38 @@ const Detail = ({ event }) => {
 
 const RelatedEvents = () => {
 	return (
-		<div style={{margin: '100px 0'}}>
-				<Row gutter={[0, 24]}>
-					<Col span={24}>
-						<Title level={3} style={{ color: '#fff' }}>
-							Others Event You May Like
+		<div style={{ margin: '100px 0' }}>
+			<Row gutter={[0, 24]}>
+				<Col span={24}>
+					<Title level={3} style={{ color: '#fff' }}>
+						Others Event You May Like
 						</Title>
-					</Col>
-				</Row>
-				<Row justify="center" >
-					<Col span={22}>
-						<EventsWithSlider />
-					</Col>
-				</Row>
+				</Col>
+			</Row>
+			<Row justify="center" >
+				<Col span={22}>
+					<EventsWithSlider />
+				</Col>
+			</Row>
 		</div>
 	);
 };
 
-const AreaPicker = ({ tickets, setSelectedTickets, setSelectedArea, ticketAreaArr }) => {
+const AreaPicker = ({ tickets, setSelectedTickets, setSelectedArea, ticketAreaArr, price }) => {
 	const [areaPicked, setAreaPicked] = useState('');
 	const [totalTicketSelected, setTotalTicketSelected] = useState(0);
-
+	console.log('object, ', _.toInteger(price));
 	return (
 		<Col span={22}>
 			<Row gutter={[0, 12]} align='middle'>
 				<Col span={6} style={{ fontWeight: 'bold', color: '#060a10' }}>
-					$80
+					{_.toInteger(price) !== 0 ? _.toInteger(price) : 'FREE'}
 				</Col>
 				<Col span={10} style={{ fontWeight: 'bold' }}>
 					<Select
 						onChange={(selectedArea) => {
 							setAreaPicked((prev) => {
-								setSelectedTickets({[selectedArea]: 1});
+								setSelectedTickets({ [selectedArea]: 1 });
 								setSelectedArea(selectedArea)
 								setTotalTicketSelected(1);
 								return selectedArea;
@@ -502,20 +517,6 @@ const AreaPicker = ({ tickets, setSelectedTickets, setSelectedArea, ticketAreaAr
 						{ticketAreaArr.map((item) => (
 							<Option value={item}>{item}</Option>
 						))}
-						{/* {type === 1 && (
-							<>
-								<Option value='VIP'>VIP</Option>
-								<Option value='A1'>A1</Option>
-								<Option value='B1'>B1</Option>
-							</>
-						)}
-						{type === 2 && (
-							<>
-								<Option value='C1'>C1</Option>
-								<Option value='Z1'>Z1</Option>
-								<Option value='W1'>W1</Option>
-							</>
-						)} */}
 					</Select>
 				</Col>
 				<Col span={8}>

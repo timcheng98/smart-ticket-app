@@ -12,6 +12,7 @@ import {
 	FireFilled,
 	SearchOutlined,
 } from '@ant-design/icons';
+import * as Service from '../core/Service'
 import { EventAPI } from '../api/smart-contract/event';
 import AppLayout from '../components/AppLayout';
 import Content from '../components/Content';
@@ -69,69 +70,70 @@ const EventList = () => {
 			<Content fullWidth>
 				<Row>
 					<Col span={24}><Banner /></Col>
-				</Row>				
+				</Row>
 			</Content>
 			<Content>
-			<Row justify='center'>
-				<Col span={24}>
-					
-				</Col>
-				<Col xs={18} sm={18} md={12} lg={12} style={{ margin: -20 }}>
-					<Input
-						placeholder='Search Events...'
-						suffix={
-							<SearchOutlined
-								style={{ fontSize: 28, paddingRight: 10, color: '#0e131d' }}
-							/>
-						}
-						style={{ height: 50, borderRadius: 30 }}
-					/>
-				</Col>
-			</Row>
-			<Row
-				gutter={[0, 20]}
-				justify='center'
-				style={{ paddingTop: 50, width: '80vw', margin: 'auto' }}
-			>
-				<Col
-					xs={22}
-					sm={22}
-					md={18}
-					lg={18}
-					style={{ fontSize: 32, fontWeight: 'bold', color: '#fff' }}
+				<Row justify='center'>
+					<Col span={24}>
+
+					</Col>
+					<Col xs={18} sm={18} md={12} lg={12} style={{ margin: -20 }}>
+						<Input
+							placeholder='Search Events...'
+							suffix={
+								<SearchOutlined
+									style={{ fontSize: 28, paddingRight: 10, color: '#0e131d' }}
+								/>
+							}
+							size="large"
+							style={{ height: 60, fontSize: 46, borderRadius: 30, paddingLeft: 30 }}
+						/>
+					</Col>
+				</Row>
+				<Row
+					gutter={[0, 20]}
+					justify='center'
+					style={{ paddingTop: 50, width: '80vw', margin: 'auto' }}
 				>
-					Events
+					<Col
+						xs={22}
+						sm={22}
+						md={18}
+						lg={18}
+						style={{ fontSize: 32, fontWeight: 'bold', color: '#fff' }}
+					>
+						Events
 				</Col>
-				<Col
-					xs={22}
-					sm={22}
-					md={18}
-					lg={18}
-					style={{ color: '#fff', fontWeight: 'bold', marginBottom: 30 }}
+					<Col
+						xs={22}
+						sm={22}
+						md={18}
+						lg={18}
+						style={{ color: '#fff', fontWeight: 'bold', marginBottom: 30 }}
+					>
+						<span style={{ marginRight: 40, color: '#FFFF00' }}>All</span>
+						<span style={{ marginRight: 40 }}>Upcoming</span>
+						<span style={{ color: '#4b607e' }}>Past</span>
+					</Col>
+				</Row>
+				<Row
+					justify='center'
+					style={{ paddingTop: 20, width: '80vw', margin: 'auto' }}
 				>
-					<span style={{ marginRight: 40, color: '#FFFF00' }}>All</span>
-					<span style={{ marginRight: 40 }}>Upcoming</span>
-					<span style={{ color: '#4b607e'}}>Past</span>
-				</Col>
-			</Row>
-			<Row
-				justify='center'
-				style={{ paddingTop: 20, width: '80vw', margin: 'auto' }}
-			>
-				<Col xs={22} sm={22} md={18} lg={18}>
-					<Row gutter={[48, 60]}>
-						<Events />
-					</Row>
-				</Col>
-			</Row>
+					<Col xs={22} sm={22} md={18} lg={18}>
+						<Row gutter={[48, 60]}>
+							<Events />
+						</Row>
+					</Col>
+				</Row>
 			</Content>
 		</AppLayout>
 	);
 };
 
 const Banner = () => {
-	return (			
-		<div style={{height: 400}}>
+	return (
+		<div style={{ height: 400 }}>
 			<img
 				style={{ width: '100%', height: '100%', objectFit: 'cover' }}
 				src='https://www.animephproject.com/wp-content/uploads/2016/01/cropped-revised-one-ok-rock-banner-1345-x-542.jpg'
@@ -168,7 +170,7 @@ const EventItem = ({ event, padding }) => {
 							height: 160,
 							borderWidth: 0,
 						}}
-						src='https://www.timesunioncenter-albany.com/mc_images/product/image/Website03.jpg'
+						src={event.approval_doc}
 					/>
 					<div style={{ position: 'absolute', top: 15, right: 15 }}>
 						<Button
@@ -256,7 +258,7 @@ const EventItem = ({ event, padding }) => {
 				</Row>
 				<Row gutter={[24, 0]}>
 					<Col span={24} style={{ fontWeight: '400', fontSize: 10 }}>
-						{moment.unix(event.startDate).format('MMM DD | HH:mm a')}
+						{moment.unix(event.start_time).format('MMM DD | HH:mm a')}
 					</Col>
 				</Row>
 				<Row gutter={[24, 16]}>
@@ -268,7 +270,7 @@ const EventItem = ({ event, padding }) => {
 					<Col>
 						<Link to={{
 							pathname: '/event',
-							state: { eventId: event.eventId }
+							state: { event }
 						}}>
 							<Button
 								style={{
@@ -303,33 +305,38 @@ const EventItem = ({ event, padding }) => {
 };
 
 export const Events = () => {
-	const [eventAPI, setEventAPI] = useState({});
+	// const [eventAPI, setEventAPI] = useState({});
 	const [eventArr, setEventArr] = useState([]);
 
 	const app = useSelector((state) => state.app);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		init();
+		getInitialData();
 	}, []);
 
 
-	const init = async () => {
-		let eventAPI = new EventAPI();
-		setEventAPI(eventAPI);
-		await eventAPI.init();
-		let event = await eventAPI.getEventAll();
-		setEventArr(event);
-	};
+	// const init = async () => {
+	// 	let eventAPI = new EventAPI();
+	// 	setEventAPI(eventAPI);
+	// 	await eventAPI.init();
+	// 	let event = await eventAPI.getEventAll();
+	// 	setEventArr(event);
+	// };
+	const getInitialData = async () => {
+		let events = await Service.call('get', '/api/sc/event');
+		setEventArr(events);
+		console.log('getInitialData >>>', events)
+	}
 
 	const EventList = () => {
 		let eventItem = [];
-		eventArr.map(item => {
+		_.each(eventArr, (item) => {
 			eventItem.push((
 				<Col xs={22} sm={22} md={12} lg={12} xl={8}>
-				
-			<EventItem event={item} />
-			</Col>))
+
+					<EventItem event={item} />
+				</Col>))
 		})
 		return eventItem;
 	};
@@ -365,8 +372,8 @@ export const EventsWithSlider = () => {
 		eventArr.map(item => {
 			eventItem.push((
 				<div key={item} style={{ position: 'relative', width: 320, }}>
-			<EventItem event={item} padding={15} />
-			</div>
+					<EventItem event={item} padding={15} />
+				</div>
 			))
 		})
 		return eventItem;
@@ -376,7 +383,7 @@ export const EventsWithSlider = () => {
 	return (
 		<Row justify="center">
 			<Col span={24}>
-				<Slider {...settings} style={{margin: 0,}}>
+				<Slider {...settings} style={{ margin: 0, }}>
 					{EventList()}
 				</Slider>
 			</Col>

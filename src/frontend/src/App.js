@@ -30,7 +30,7 @@ import RootProvider from './container/RootProvider';
 // import CreateEvent from './pages/CreateEvent'
 
 import 'antd/dist/antd.css';
-import './styles/styles.scss';
+import './styles/styles.css';
 
 
 const store = configureStore();

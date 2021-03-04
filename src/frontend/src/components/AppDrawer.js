@@ -128,7 +128,37 @@ const AppDrawer = (props) => {
                 dispatch(setDrawerVisible(false));
               }}
             >
-              homepage
+              Home
+            </Button>
+          </Link>
+        </Col>
+        <Divider style={{margin: '10px 0px'}} />
+        <Col xs={24}>
+          <Link to="/events">
+            <Button
+              style={styles.text}
+              className="hyperlink"
+              type="text"
+              onClick={() => {
+                dispatch(setDrawerVisible(false));
+              }}
+            >
+              Latest Events
+            </Button>
+          </Link>
+        </Col>
+        <Divider style={{margin: '10px 0px'}} />
+        <Col xs={24}>
+          <Link to="/account">
+            <Button
+              style={styles.text}
+              className="hyperlink"
+              type="text"
+              onClick={() => {
+                dispatch(setDrawerVisible(false));
+              }}
+            >
+              My Wallet
             </Button>
           </Link>
         </Col>
@@ -143,7 +173,7 @@ const AppDrawer = (props) => {
                 dispatch(setDrawerVisible(false));
               }}
             >
-              about_us
+              About Us
             </Button>
           </Link>
         </Col>
@@ -158,7 +188,37 @@ const AppDrawer = (props) => {
                 dispatch(setDrawerVisible(false));
               }}
             >
-              contact_us
+              Contact Us
+            </Button>
+          </Link>
+        </Col>
+        <Divider style={{margin: '10px 0px'}} />
+        <Col xs={24}>
+          <Link to="/terms">
+            <Button
+              style={styles.text}
+              className="hyperlink"
+              type="text"
+              onClick={() => {
+                dispatch(setDrawerVisible(false));
+              }}
+            >
+              Terms & Conditions
+            </Button>
+          </Link>
+        </Col>
+        <Divider style={{margin: '10px 0px'}} />
+        <Col xs={24}>
+          <Link to="/privacy">
+            <Button
+              style={styles.text}
+              className="hyperlink"
+              type="text"
+              onClick={() => {
+                dispatch(setDrawerVisible(false));
+              }}
+            >
+              Privacy Policy
             </Button>
           </Link>
         </Col>
@@ -228,13 +288,13 @@ const AppDrawer = (props) => {
 
 const styles = {
   icon: {
-    color: '#4b607e',
+    color: '#7e96b8',
     marginRight: 20,
     fontSize: 20,
     transform: 'translateY(20%)'
   },
   text: {
-    color: '#4b607e',
+    color: '#7e96b8',
     fontSize: 16,
   }
 }

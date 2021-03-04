@@ -10,8 +10,9 @@ import Logo from './Logo'
 const { Footer } = Layout;
 
 const linkData = [
-  {name: 'logistics_rules', url: '/logistics'},
-  {name: 'return_policy', url: '/returns'}
+  { name: 'Latest Events', url: '/events' },
+  // { name: 'logistics_rules', url: '/logistics' },
+  // { name: 'return_policy', url: '/returns' }
   // {name: '關於我們', url: '/contact'},
   // {name: '送貨需知', url: 'logistics'},
   // {name: '退貨需知', url: '/returns'},
@@ -20,14 +21,13 @@ const linkData = [
 ]
 
 const serviceData = [
-  {name: 'account', url: '/account'},
-  {name: 'order_guideline', url: '/order_guideline'},
+  { name: 'My Wallet', url: '/account' },
+  // { name: 'order_guideline', url: '/order_guideline' },
 ]
 
 const aboutUsData = [
-  {name: 'about_us', url: '/about_us'},
-  {name: 'blog', url: '/blog'},
-  {name: 'contact_us', url: '/contact'},
+  { name: 'About Us', url: '/about_us' },
+  { name: 'Contact Us', url: '/contact' },
 ]
 const AppFooter = (props) => {
   // const meta = useSelector((state) => state.app.client.meta);
@@ -48,52 +48,52 @@ const UpperFooter = (props) => {
 
   const shopInfo = () => {
     return (
-      <div style={{paddingBottom: 30}}>
-          <span  className="hyperlink">
-            <div style={{
-              width: '80%', maxWidth: 150, paddingBottom: 20, height: 120
-            }}
-            >
-              <Logo />
-            </div>
-          </span>
+      <div style={{ paddingBottom: 30 }}>
+        <span className="hyperlink">
+          <div style={{
+            width: '80%', maxWidth: 150, paddingBottom: 20, height: 120
+          }}
+          >
+            <Logo />
+          </div>
+        </span>
       </div>
     )
   }
   const AboutUs = () => {
     return (
-      <div style={{marginBottom: 30}}>
-      <p style={styles.text, { fontWeight: 'bold', color: '#5a5a5a', fontSize: 14}}>our_company</p>
-      <List
-        size="small"
-        split={false}
-        itemLayout="horizontal"
-        dataSource={aboutUsData}
-        renderItem={(item) => {
-          return (
-            <List.Item
-              style={{
-                ...styles.text, padding: '0 0 10px 0', fontSize: 14, cursor: 'pointer'
-              }}
-              key={item.category_id}
-            >
-              <Link to={item.url}>
-                <span  className="hyperlink" style={{color: '#5a5a5a'}}>
-                  {item.name}
-                </span>
-              </Link>
-            </List.Item>
-          )
-        }}
-      />
-    </div>
+      <div style={{ marginBottom: 30 }}>
+        <p style={styles.text, { fontWeight: 'bold', color: '#7e96b8', fontSize: 14 }}>Our Company</p>
+        <List
+          size="small"
+          split={false}
+          itemLayout="horizontal"
+          dataSource={aboutUsData}
+          renderItem={(item) => {
+            return (
+              <List.Item
+                style={{
+                  ...styles.text, padding: '0 0 10px 0', fontSize: 14, cursor: 'pointer'
+                }}
+                key={item.category_id}
+              >
+                <Link to={item.url}>
+                  <span className="hyperlink" style={{ color: '#7e96b8' }}>
+                    {item.name}
+                  </span>
+                </Link>
+              </List.Item>
+            )
+          }}
+        />
+      </div>
     )
   }
 
   const shopService = () => {
     return (
-      <div style={{marginBottom: 30}}>
-        <p style={styles.text, { fontWeight: 'bold', color: '#5a5a5a', fontSize: 14}}>customer_services</p>
+      <div style={{ marginBottom: 30 }}>
+        <p style={styles.text, { fontWeight: 'bold', color: '#7e96b8', fontSize: 14 }}>Account Information</p>
         <List
           size="small"
           split={false}
@@ -110,7 +110,7 @@ const UpperFooter = (props) => {
             //         key={item.category_id}
             //         onClick={() => setLoginModalVisible(true)}
             //       >
-            //         <span  className="hyperlink" style={{color: '#5a5a5a'}}>{item.name}</span>
+            //         <span  className="hyperlink" style={{color: '#7e96b8'}}>{item.name}</span>
             //       </List.Item>
             //     )
             //   }
@@ -123,7 +123,7 @@ const UpperFooter = (props) => {
                 key={item.category_id}
               >
                 <Link to={item.url}>
-                  <span  className="hyperlink" style={{color: '#5a5a5a'}}>
+                  <span className="hyperlink" style={{ color: '#7e96b8' }}>
                     {item.name}
                   </span>
                 </Link>
@@ -139,9 +139,9 @@ const UpperFooter = (props) => {
     return (
       <div>
         <Link to="/terms">
-          <p style={{...styles.text}}>
-            <span  className="hyperlink" style={{color: '#5a5a5a', fontWeight: 'bold', fontSize: 14}}>
-              terms_and_conditions
+          <p style={{ ...styles.text }}>
+            <span className="hyperlink" style={{ color: '#7e96b8', fontWeight: 'bold', fontSize: 14 }}>
+              Useful Link
             </span>
           </p>
         </Link>
@@ -155,7 +155,7 @@ const UpperFooter = (props) => {
             }}
             >
               <Link to={item.url}>
-                <span  className="hyperlink" style={{color: '#5a5a5a'}}>{item.name}</span>
+                <span className="hyperlink" style={{ color: '#7e96b8' }}>{item.name}</span>
               </Link>
             </List.Item>
           )}
@@ -168,23 +168,23 @@ const UpperFooter = (props) => {
     <Content>
       <Footer style={styles.upperFooter}>
         <Row justify="center">
-          <Col xs={24} sm={24} md={5} lg={5} style={{textAlign: 'left'}}>
+          <Col xs={24} sm={24} md={5} lg={5} style={{ textAlign: 'left' }}>
             {shopInfo()}
           </Col>
-          <Col xs={24} sm={24} md={5} lg={5} style={{textAlign: 'left'}}>
+          <Col xs={24} sm={24} md={5} lg={5} style={{ textAlign: 'left' }}>
             {AboutUs()}
           </Col>
-          <Col xs={24} sm={24} md={5} lg={5} style={{textAlign: 'left'}}>
+          <Col xs={24} sm={24} md={5} lg={5} style={{ textAlign: 'left' }}>
             {shopService()}
           </Col>
-          <Col xs={24} sm={24} md={5} lg={5} style={{textAlign: 'left', paddingBottom: 20}}>
+          <Col xs={24} sm={24} md={5} lg={5} style={{ textAlign: 'left', paddingBottom: 20 }}>
             {usedLink()}
           </Col>
-          <Col xs={24} sm={24} md={4} lg={4} style={{textAlign: 'left', paddingBottom: 20}}>
+          <Col xs={24} sm={24} md={4} lg={4} style={{ textAlign: 'left', paddingBottom: 20 }}>
             {/* <img src="/img/alipay_hk.svg" style={{width: '100%', maxWidth: 30, marginRight: 30}} alt="alipay payment" />
             <img src="/img/payme.svg" style={{width: '100%', maxWidth: 30, marginRight: 30}} alt="payme payment" />
             <img src="/img/fps.svg" style={{width: '100%', maxWidth: 30}} alt="fps payment" /> */}
-              {/* <MediaGroup mode="dark" whatsapp/> */}
+            {/* <MediaGroup mode="dark" whatsapp/> */}
           </Col>
         </Row>
       </Footer>
@@ -210,54 +210,56 @@ const LowerFooter = (props) => {
       <Footer style={styles.lowerFooter}>
         <Row justify="space-around">
           {/* Mobile */}
-          <Col xs={24} sm={24} md={0} lg={0} style={{textAlign: 'left', paddingBottom: 10}}>
+          <Col xs={24} sm={24} md={0} lg={0} style={{ textAlign: 'left', paddingBottom: 10 }}>
             <Link to="/terms">
-              <span 
+              <span
                 style={{
-                  color: '#5a5a5a', fontSize: 14, marginBottom: 0, marginRight: 20
+                  color: '#7e96b8', fontSize: 14, marginBottom: 0, marginRight: 20
                 }}
                 className="hyperlink"
               >
-                terms_of_services
+                Terms of Services
               </span>
             </Link>
             <Link to="/privacy">
-              <span 
+              <span
                 className="hyperlink"
-                style={{color: '#5a5a5a', fontSize: 14, marginBottom: 0}}
+                style={{ color: '#7e96b8', fontSize: 14, marginBottom: 0 }}
               >
-                privacy_policy
+                Privacy Policy
               </span>
             </Link>
           </Col>
-          <Col xs={24} sm={24} md={0} lg={0} style={{textAlign: 'left'}}>
-            <p style={{color: '#5a5a5a', fontSize: 14, marginBottom: 0}} >
-              copyright_owner
+          <Col xs={24} sm={24} md={0} lg={0} style={{ textAlign: 'left' }}>
+            <p style={{ color: '#7e96b8', fontSize: 14, marginBottom: 0 }} >
+              Smart Ticket &copy; 2021 Reserved All Rights
             </p>
           </Col>
           {/* Mobile */}
 
           {/* Desktop */}
-          <Col xs={0} sm={0} md={12} lg={12} style={{textAlign: 'left'}}>
-            <p style={{color: '#5a5a5a', fontSize: 14, marginBottom: 0}}>copyright_owner</p>
+          <Col xs={0} sm={0} md={12} lg={12} style={{ textAlign: 'left' }}>
+            <p style={{ color: '#7e96b8', fontSize: 14, marginBottom: 0 }}>
+              Smart Ticket &copy; 2021 Reserved All Rights
+            </p>
           </Col>
-          <Col xs={0} sm={0} md={12} lg={12} style={{textAlign: 'right'}}>
+          <Col xs={0} sm={0} md={12} lg={12} style={{ textAlign: 'right' }}>
             <Link to="/terms">
-              <span  
+              <span
                 style={{
-                  color: '#5a5a5a', fontSize: 14, marginBottom: 0, marginRight: 20
+                  color: '#7e96b8', fontSize: 14, marginBottom: 0, marginRight: 20
                 }}
                 className="hyperlink"
               >
-                terms_of_services
+                Terms of Services
               </span>
             </Link>
             <Link to="/privacy">
-              <span 
+              <span
                 className="hyperlink"
-                style={{color: '#5a5a5a', fontSize: 14, marginBottom: 0}}
+                style={{ color: '#7e96b8', fontSize: 14, marginBottom: 0 }}
               >
-                privacy_policy
+                Privacy Policy
               </span>
             </Link>
           </Col>
@@ -280,7 +282,7 @@ const styles = {
     padding: '50px 5% 30px 5%',
     paddingBottom: 0,
     backgroundColor: '#060a10'
-    // backgroundColor: '#FAFAFA',
+    // backgroundColor: '#7e96b8',
   },
   lowerFooter: {
     textAlign: 'center',
@@ -289,7 +291,7 @@ const styles = {
     backgroundColor: '#060a10'
     // marginLeft: '5%',
     // marginRight: '5%',
-    // backgroundColor: '#FAFAFA',
+    // backgroundColor: '#7e96b8',
   },
   icon: {
     color: '#FFFFFF',

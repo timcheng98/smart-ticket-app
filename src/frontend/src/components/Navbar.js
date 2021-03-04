@@ -35,7 +35,7 @@ const Navbar = (props) => {
 
         {/* Mobile Version */}
         <Col xs={6} sm={6} md={0} lg={0} xl={0}>
-            <MenuOutlined style={{...styles.icon, color: '#4b607e', fontSize: 20 }} onClick={() => {
+            <MenuOutlined style={{...styles.icon, color: '#7e96b8', fontSize: 20 }} onClick={() => {
               dispatch(CommonAction.setDrawerVisible(true));
             }} />
           </Col>
@@ -64,17 +64,17 @@ const Navbar = (props) => {
             <Logo />
           {/* </div> */}
         </Col>
-        <Col xs={0} sm={0} md={6} lg={5} xl={4}>
+        <Col xs={0} sm={0} md={6} lg={4} xl={3}>
           <Row justify="space-between" style={{color: '#fff'}}>
             <Link to="/events">
-              <Col style={{color: '#4b607e', fontWeight: '500', fontSize: 16}}>Events</Col>
+              <Col style={{color: '#7e96b8', fontWeight: '500', fontSize: 16}}>Events</Col>
             </Link>
             <Link to="/account">
-              <Col style={{color: '#4b607e', fontWeight: '500', fontSize: 16}}>Account</Col>
+              <Col style={{color: '#7e96b8', fontWeight: '500', fontSize: 16}}>Account</Col>
             </Link>
-            <Link to="/">
-              <Col style={{color: '#4b607e', fontWeight: '500', fontSize: 16}}>Login</Col>
-            </Link>
+            {/* <Link to="/">
+              <Col style={{color: '#7e96b8', fontWeight: '500', fontSize: 16}}>Login</Col>
+            </Link> */}
           </Row>
         </Col>
         <Col xs={0} sm={0} md={12} lg={14} xl={16}>
