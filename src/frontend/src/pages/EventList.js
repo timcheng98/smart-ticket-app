@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
-import { Input, Button, Row, Col, Card, Carousel } from 'antd';
+import { Input, Button, Row, Col, Card, Popover } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { setTotalSeats } from '../redux/actions/common';
 import _ from 'lodash';
@@ -11,6 +11,9 @@ import {
 	HeartFilled,
 	FireFilled,
 	SearchOutlined,
+	FacebookFilled,
+	WhatsAppOutlined,
+	InstagramFilled
 } from '@ant-design/icons';
 import * as Service from '../core/Service'
 import { EventAPI } from '../api/smart-contract/event';
@@ -22,25 +25,70 @@ import "slick-carousel/slick/slick-theme.css";
 
 
 const settings = {
-	className: 'slider variable-width',
+  className: 'slider variable-width',
+  // centerMode: true,
+  variableWidth: true,
+  dots: true,
+  infinite: false,
+  arrows: false,
+  speed: 1000,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  autoplay: false,
+  autoplaySpeed: 3000,
+	responsive: [
+		{
+			breakpoint: 1024,
+			settings: {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				infinite: false,
+				dots: false
+			}
+		},
+		{
+			breakpoint: 800,
+			settings: {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				initialSlide: 1,
+				dots: false,
+				infinite: true,
+				// arrows: false,
+			}
+		},
+		{
+			breakpoint: 480,
+			settings: {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				dots: false,
+				infinite: true
+			}
+		}
+	]
+};
+
+const bannerSettings = {
+	// className: 'slider variable-width',
 	// centerMode: true,
-	variableWidth: true,
-	dots: true,
+	dots: false,
 	infinite: true,
 	arrows: false,
 	speed: 1000,
 	slidesToShow: 1,
 	slidesToScroll: 1,
-	autoplay: false,
+	autoplay: true,
+	fade: true,
 	autoplaySpeed: 3000,
 	responsive: [
 		{
 			breakpoint: 1024,
 			settings: {
-				slidesToShow: 3,
-				slidesToScroll: 3,
-				infinite: true,
-				dots: true
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				infinite: false,
+				dots: false
 			}
 		},
 		{
@@ -65,11 +113,22 @@ const settings = {
 };
 
 const EventList = () => {
+	const [events, setEvents] = useState({});
+
+	useEffect(() => {
+		getInitialData();
+	}, []);
+
+	const getInitialData = async () => {
+		let events = await Service.call('get', '/api/sc/event');
+		setEvents(events);
+	}
+
 	return (
 		<AppLayout>
 			<Content fullWidth>
-				<Row>
-					<Col span={24}><Banner /></Col>
+				<Row style={{marginTop: 30}}>
+					<Col span={24}><Banner events={events} /></Col>
 				</Row>
 			</Content>
 			<Content>
@@ -77,7 +136,7 @@ const EventList = () => {
 					<Col span={24}>
 
 					</Col>
-					<Col xs={18} sm={18} md={12} lg={12} style={{ margin: -20 }}>
+					<Col xs={20} sm={20} md={12} lg={12} style={{ margin: -40 }}>
 						<Input
 							placeholder='Search Events...'
 							suffix={
@@ -96,8 +155,8 @@ const EventList = () => {
 					style={{ paddingTop: 50, width: '80vw', margin: 'auto' }}
 				>
 					<Col
-						xs={22}
-						sm={22}
+						xs={24}
+						sm={24}
 						md={18}
 						lg={18}
 						style={{ fontSize: 32, fontWeight: 'bold', color: '#fff' }}
@@ -120,9 +179,9 @@ const EventList = () => {
 					justify='center'
 					style={{ paddingTop: 20, width: '80vw', margin: 'auto' }}
 				>
-					<Col xs={22} sm={22} md={18} lg={18}>
-						<Row gutter={[48, 60]}>
-							<Events />
+					<Col xs={24} sm={24} md={18} lg={18}>
+						<Row gutter={[0, 60]}>
+							<Events events={events} />
 						</Row>
 					</Col>
 				</Row>
@@ -131,14 +190,38 @@ const EventList = () => {
 	);
 };
 
-const Banner = () => {
+const Banner = ({ events }) => {
+	// console.log(events);
+	const [banners, setBanners] = useState(null);
+
+	useEffect(() => {
+		getBanners();
+	}, [events]);
+
+	const getBanners = () => {
+		let banners = [];
+		let eventsMap = _.map(events, 'approval_doc');
+		_.map(eventsMap, (src) => {
+			banners.push((
+				<div style={{ margin: 0, padding: 0 }}>
+
+					<div style={{ position: 'relative', backgroundImage: `url('${src}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', margin: 0, paddingBottom: 400, width: '100%' }} ></div>
+					{/* <img
+							style={{ width: '100%', height: '100%', objectFit: 'cover', height: 400 }}
+							src={src}
+						/> */}
+				</div>
+			))
+		});
+		setBanners(banners)
+	}
+
 	return (
-		<div style={{ height: 400 }}>
-			<img
-				style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-				src='https://www.animephproject.com/wp-content/uploads/2016/01/cropped-revised-one-ok-rock-banner-1345-x-542.jpg'
-			/>
-		</div>
+		// <div style={{ margin: 0, height: 400, width: '100%' }}>
+		<Slider {...bannerSettings} style={{ margin: 0, padding: 0, width: '100%' }}>
+			{banners}
+		</Slider>
+		// </div>
 	);
 };
 
@@ -154,6 +237,7 @@ const EventItem = ({ event, padding }) => {
 			style={{
 				borderRadius: 18,
 				borderWidth: 1,
+				// width: 350
 			}}
 			bordered
 			hoverable
@@ -183,15 +267,37 @@ const EventItem = ({ event, padding }) => {
 								/>
 							}
 						/>
-						<Button
-							shape='circle'
-							size='small'
-							icon={
-								<ShareAltOutlined
-									style={{ color: '#8a8a8a', transform: 'translate(0, -15%)' }}
-								/>
+						<Popover
+							content={(
+								<Row gutter={[16, 0]}>
+									<Col>
+										<WhatsAppOutlined
+											style={{ color: '#87d068', fontSize: 24 }}
+										/>
+									</Col>
+									<Col>
+										<InstagramFilled
+											style={{ color: '#8a3ab9', fontSize: 24 }}
+										/>
+									</Col>
+									<Col>
+										<FacebookFilled
+											style={{ color: '#108ee9', fontSize: 24 }}
+										/>
+									</Col>
+								</Row>)
 							}
-						/>
+						>
+							<Button
+								shape='circle'
+								size='small'
+								icon={
+									<ShareAltOutlined
+										style={{ color: '#8a8a8a', transform: 'translate(0, -15%)' }}
+									/>
+								}
+							/>
+						</Popover>
 					</div>
 					<div style={{ position: 'absolute', bottom: 5, right: 15 }}>
 						<FireFilled
@@ -205,7 +311,7 @@ const EventItem = ({ event, padding }) => {
 				</div>
 			}
 		>
-			<Col span={24}>
+			<Col span={24} style={{padding: 0}}>
 				<Row gutter={[24, 10]}>
 					<Col span={24} style={{ fontWeight: 'bold', fontSize: 16 }}>
 						{event.name}
@@ -304,75 +410,52 @@ const EventItem = ({ event, padding }) => {
 	);
 };
 
-export const Events = () => {
-	// const [eventAPI, setEventAPI] = useState({});
-	const [eventArr, setEventArr] = useState([]);
-
-	const app = useSelector((state) => state.app);
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		getInitialData();
-	}, []);
-
-
-	// const init = async () => {
-	// 	let eventAPI = new EventAPI();
-	// 	setEventAPI(eventAPI);
-	// 	await eventAPI.init();
-	// 	let event = await eventAPI.getEventAll();
-	// 	setEventArr(event);
-	// };
-	const getInitialData = async () => {
-		let events = await Service.call('get', '/api/sc/event');
-		setEventArr(events);
-		console.log('getInitialData >>>', events)
-	}
-
+export const Events = ({ events }) => {
 	const EventList = () => {
 		let eventItem = [];
-		_.each(eventArr, (item) => {
+		_.each(events, (item) => {
 			eventItem.push((
-				<Col xs={22} sm={22} md={12} lg={12} xl={8}>
-
-					<EventItem event={item} />
+				<Col xs={24} sm={24} md={8} lg={8} xl={8}>
+					<EventItem event={item} padding={20} />
 				</Col>))
 		})
 		return eventItem;
 	};
 
 	return (
-		<Row gutter={[48, 48]}>
+		<Row gutter={[{xs: 0, sm: 0, md: 24, lg: 24}, 48]}>
 			{EventList()}
 		</Row>
 	);
 };
 
-export const EventsWithSlider = () => {
-	const [eventAPI, setEventAPI] = useState({});
-	const [eventArr, setEventArr] = useState([]);
-
-	const app = useSelector((state) => state.app);
-	const dispatch = useDispatch();
+export const EventsWithSlider = ({ event }) => {
+	const [eventArr, setEventArr] = useState({});
 
 	useEffect(() => {
-		init();
+		getInitialData()
 	}, []);
 
-	const init = async () => {
-		let eventAPI = new EventAPI();
-		setEventAPI(eventAPI);
-		await eventAPI.init();
-		let event = await eventAPI.getEventAll();
-		setEventArr(event);
-	};
+	const getInitialData = async () => {
+		let events = await Service.call('get', '/api/sc/event');
+		setEventArr(events)
+	}
+
 
 	const EventList = () => {
 		let eventItem = [];
-		eventArr.map(item => {
+		_.each(eventArr, (item, key) => {
+			// if (event.eventId === item.eventId) return null;
 			eventItem.push((
-				<div key={item} style={{ position: 'relative', width: 320, }}>
-					<EventItem event={item} padding={15} />
+				<div
+					style={{
+						position: 'relative',
+						width: 350,
+						margin: 0,
+						maxWidth: '80vw',
+					}}
+				>
+					<EventItem event={item} padding={20} />
 				</div>
 			))
 		})
@@ -381,13 +464,9 @@ export const EventsWithSlider = () => {
 
 
 	return (
-		<Row justify="center">
-			<Col span={24}>
-				<Slider {...settings} style={{ margin: 0, }}>
-					{EventList()}
-				</Slider>
-			</Col>
-		</Row>
+		<Slider {...settings} style={{ margin: 0, width: '100%' }}>
+			{EventList()}
+		</Slider>
 	);
 };
 

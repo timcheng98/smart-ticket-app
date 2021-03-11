@@ -11,12 +11,19 @@ import {
   Button,
   Input,
   Radio,
-  message
+  message,
+  Spin,
+  List,
+  Avatar,
+  Modal
 } from "antd";
+import { useHistory } from 'react-router-dom'
+import * as CommonActions from '../redux/actions/common'
 import { useSelector, useDispatch } from "react-redux";
 import _ from "lodash";
 import moment from "moment";
-import {} from "@ant-design/icons";
+import { QrcodeOutlined, CloseOutlined } from "@ant-design/icons";
+import QRCode from 'qrcode'
 import logo from "../assets/eth_logo.png";
 import FormUploadFile from '../components/FormUploadFile'
 import * as Service from '../../src/core/Service'
@@ -26,12 +33,19 @@ const { Paragraph } = Typography;
 const { TabPane } = Tabs;
 
 const Account = () => {
-  useEffect(() => {}, []);
+  const dispatch = useDispatch();
+  const history = useHistory();
 
+  const logout = async () => {
+    await Service.call('post', '/api/user/logout');
+    dispatch(CommonActions.setAuth(false));
+    dispatch(CommonActions.setUser({ user_id: 0 }));
+    history.push('/')
+  }
   return (
     <AppLayout>
       <Row justify="center" style={{ height: "100%", marginTop: 100, marginBottom: 100 }}>
-        <Col span={20}>
+        <Col xs={0} sm={0} md={20} lg={20}>
           <Tabs
             // centered
             tabPosition="left"
@@ -44,6 +58,23 @@ const Account = () => {
             <TabPane tab="Wallet" key="2">
               <TicketOwn />
             </TabPane>
+            <TabPane tab={<Button onClick={logout} className="custom-button">Logout</Button>} key="3" />
+          </Tabs>
+        </Col>
+        <Col xs={22} sm={22} md={0} lg={0}>
+          <Tabs
+            centered
+            tabPosition="top"
+            size="large"
+            tabBarStyle={{ color: "#fff", fontWeight: "bold", width: '100%' }}
+          >
+            <TabPane tab="Information" key="1">
+              <Information />
+            </TabPane>
+            <TabPane tab="Wallet" key="2">
+              <TicketOwn />
+            </TabPane>
+            <TabPane tab={<Button onClick={logout} type="text" style={{ color: '#fff', fontWeight: 'bold', fontSize: 15 }}>Logout</Button>} key="3" />
           </Tabs>
         </Col>
       </Row>
@@ -58,19 +89,19 @@ const Information = () => {
 
   const [imageURL, setImageURL] = useState("");
   const [fileInfo, setFileInfo] = useState({});
-  
+
   useEffect(() => {
     console.log(user)
     form.setFieldsValue({
       ...user,
-      user_kyc_id: user.user_kyc_id > 0
+      user_kyc_id: user.user_kyc_id > 0 ? 1 : 0
     })
   }, [])
 
   const uploadOnChange = async (info) => {
-    const { status,response } = info.file;
+    const { status, response } = info.file;
     if (status === 'done') {
-      if( response.status > 0 ) {
+      if (response.status > 0) {
         message.success('成功上載');
         let patchObj = {
           company_doc: info.file.response.filename
@@ -81,7 +112,7 @@ const Information = () => {
         setImageURL(`${app.config.STATIC_SERVER_URL}/media/${info.file.response.filename}`)
         setFileInfo(info.file);
       }
-      else{
+      else {
         message.error('上載失敗')
       }
     }
@@ -110,63 +141,84 @@ const Information = () => {
       }}
       form={form}
     >
-       <Form.Item >
+      <Form.Item >
         <Button size="large" className="custom-button">Apply KYC</Button>
       </Form.Item>
-        <Form.Item label="ID Verification" name="user_kyc_id">
+      <Form.Item label="ID Verification" name="user_kyc_id">
         <Radio.Group disabled>
           <Radio value={1}>YES</Radio>
           <Radio value={0}>NO</Radio>
         </Radio.Group>
       </Form.Item>
       <Form.Item label="First Name" name="first_name">
-        <Input className="custom-input" placeholder="First Name"/>
+        <Input className="custom-input" placeholder="First Name" />
       </Form.Item>
       <Form.Item label="Last Name" name="last_name">
-        <Input className="custom-input" placeholder="Last Name"/>
+        <Input className="custom-input" placeholder="Last Name" />
       </Form.Item>
       <Form.Item label="E-Mail" name="email">
-        <Input disabled className="custom-input" placeholder="E-Mail"/>
+        <Input disabled className="custom-input" placeholder="E-Mail" />
       </Form.Item>
       <Form.Item label="ID Documents" name="email">
-        <FormUploadFile 
-         type="one"
-         data={{ scope: "private" }}
-         onChange={uploadOnChange}
-         onRemove={onRemove}
-         imageURL={imageURL}
+        <FormUploadFile
+          type="one"
+          data={{ scope: "private" }}
+          onChange={uploadOnChange}
+          onRemove={onRemove}
+          imageURL={imageURL}
         />
       </Form.Item>
       <Form.Item label="Personal Photo" name="email">
-        <FormUploadFile 
-         type="one"
-         data={{ scope: "private" }}
-         onChange={uploadOnChange}
-         onRemove={onRemove}
-         imageURL={imageURL}
+        <FormUploadFile
+          type="one"
+          data={{ scope: "private" }}
+          onChange={uploadOnChange}
+          onRemove={onRemove}
+          imageURL={imageURL}
         />
       </Form.Item>
     </Form>
-    
+
   );
 };
 
 const TicketOwn = () => {
-  const [loading, setLoading] = useState(false);
-  const [totalTickets, setTotalTickets] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [totalTickets, setTotalTickets] = useState([]);
+  const [ticketSum, setTicketSum] = useState(0);
+  const user = useSelector((state) => state.app.user);
+
+  useEffect(() => {
+    getOwnerTicket();
+  }, []);
+
+  const getOwnerTicket = async () => {
+    let tickets = await Service.call('post', '/api/sc/event/ticket/owner', { address: user.wallet_address });
+
+    let ticket_sum = 0;
+    _.each(tickets, (item) => {
+      ticket_sum += item.ticket_own
+    })
+    setTotalTickets(tickets);
+    setTicketSum(ticket_sum);
+    setLoading(false)
+  }
+
 
   return (
-    <div style={{ paddingTop: 100, marginBottom: 80 }}>
-      <Row justify="center" gutter={[0, 16]}>
-        <Col xs={22} sm={22} md={7} lg={7}>
-          <Wallet totalTickets={totalTickets} />
-        </Col>
-      </Row>
-      <Row justify="center" gutter={[0, 16]}>
-        <Col xs={22} sm={22} md={10} lg={10}>
-          <EventList setTotalTickets={setTotalTickets} />
-        </Col>
-      </Row>
+    <div style={{ paddingTop: 20, marginBottom: 80 }}>
+      <Spin spinning={loading}>
+        <Row justify="center" gutter={[0, 16]}>
+          <Col xs={24} sm={24} md={12} lg={12}>
+            <Wallet totalTickets={ticketSum} />
+          </Col>
+        </Row>
+        <Row justify="center" gutter={[0, 16]}>
+          <Col xs={22} sm={22} md={12} lg={12}>
+            <EventList events={totalTickets} />
+          </Col>
+        </Row>
+      </Spin>
     </div>
   );
 };
@@ -226,68 +278,147 @@ const Wallet = ({ totalTickets }) => {
   );
 };
 
-const EventList = ({ setTotalTickets }) => {
-  const [eventArr, setEventArr] = useState([]);
+const EventList = ({ events }) => {
+  const [eventList, setEventList] = useState(events);
+  const [eventCount, setEventCount] = useState(0);
   const [ticketArr, setTicketArr] = useState([]);
   const [eventElement, setEvenElement] = useState(null);
-
-  const user = useSelector(state => state.app.user)
+  const [selectedEvent, setSelectedEvent] = useState(-1)
+  const user = useSelector(state => state.app.user);
+  const [modalVisible, setModalVisible] = useState(false)
+  const [qrcode, setQrcode] = useState('')
+  useEffect(() => {
+    setEventList(events);
+  }, [events])
 
   useEffect(() => {
-    getOwnerTicket();
-  }, []);
+    Events();
+  }, [eventList])
 
-  const getOwnerTicket = async () => {
-    let tickets = await Service.call('post', '/api/sc/event/ticket/owner', { address: user.wallet_address })
-    Events(tickets)
-    console.log('tickets', tickets)
-  }
-  
-    // const getTicket = async () => {
-    //   let ticket = await eventAPI.getTicketAll();
-    //   let events = await eventAPI.getEventAll();
-    //   ticket = _.keyBy(ticket, "area");
-    //   ticket = _.map(ticket, "area");
-    //   setTicketArr(ticket);
-    //   setEventArr(events);
+  useEffect(() => {
+    if (selectedEvent === -1) return;
+    setEventList({ [selectedEvent]: events[selectedEvent] });
+  }, [selectedEvent])
 
-    //   setLoading(false);
-    // };
-
-  const Events = async (ticketArr) => {
+  const Events = async () => {
     const eventElement = [];
-    let total = 0;
-    if (ticketArr.length === 0) {
+    if (_.isEmpty(eventList)) {
       eventElement.push(
-        <Row align="middle" justify="center" style={{ height: 100 }}>
-          <Col style={{ fontSize: 18, fontWeight: "bold", color: "#9a9a9a" }}>
+        <Row key={0} align="middle" justify="center" style={{ height: 100 }}>
+          <Col style={{ fontSize: 18, fontWeight: "bold", color: "#0e131d" }}>
             No Ticket Found
           </Col>
         </Row>
       );
       return setEvenElement(eventElement);
     }
-    ticketArr.map((val, index) => {
+    let count = 0;
+    _.each(eventList, (item, key) => {
       let detail = {
-        event: val.event,
-        total: val.total,
+        event: item.event,
+        ticket_own: item.ticket_own,
       };
-      total += val.total;
       let element = (
-        <>
-          <Event key={val} detail={detail} />
+        <div onClick={() => setSelectedEvent(key)}>
+          <Event key={key} detail={detail} />
           <Divider />
-        </>
+        </div>
       );
-      if (index === ticketArr.length - 1) {
-        element = <Event key={val} detail={detail} />;
-      }
-
       eventElement.push(element);
+      count++
     });
+    setEventCount(count)
     setEvenElement(eventElement);
-    setTotalTickets(total);
-  };
+  }
+
+  const generateQR = async text => {
+    try {
+      const opts = {
+        errorCorrectionLevel: 'L',
+        type: 'image/png',
+        quality: 1,
+        margin: 1,
+        color: {
+          dark: "#0e131d",
+          light: "#fff"
+        }
+      }
+      let qrcode = await QRCode.toDataURL(text, opts);
+      setQrcode(qrcode);
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  if (selectedEvent !== -1) {
+    return (
+      <Card
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: 20,
+          width: "100%",
+          marginTop: 10,
+        }}
+      >
+        <div
+          onClick={() => {
+            setSelectedEvent(-1);
+            setEventList(events);
+          }}
+        >
+          {eventElement}
+        </div>
+        <Row justify="center">
+          <Col span={12}>
+            <Button onClick={() => {
+              setSelectedEvent(-1);
+              setEventList(events);
+            }} style={{ width: '100%', borderColor: '#0e131d', color: '#0e131d', fontWeight: 'bold', marginBottom: 8 }}>Back</Button>
+          </Col>
+        </Row>
+        <Row style={{ textAlign: 'center', fontWeight: 'bold', marginTop: 12 }}>
+          <Col span={2}></Col>
+          <Col span={6}>Area</Col>
+          <Col span={8}>Seat</Col>
+          <Col span={8}>Price</Col>
+        </Row>
+        <Divider style={{ margin: '8px 0px', }} />
+        <List
+          itemLayout="horizontal"
+          dataSource={events[selectedEvent].tickets}
+          renderItem={item => (
+            <List.Item>
+              <Row style={{ width: '100%', textAlign: 'center' }}>
+                <Col span={2}><QrcodeOutlined onClick={() => {
+                  generateQR(JSON.stringify(item))
+                  setModalVisible(true);
+                }} style={{ color: '#0e131d', fontSize: 20 }} /></Col>
+                <Col span={6}>{item.area}</Col>
+                <Col span={8}>{item.seat}</Col>
+                <Col span={8}>{item.price === 0 ? 'Free' : `$${item.price}`}</Col>
+              </Row>
+            </List.Item>
+          )}
+        />
+        <Modal
+          title={'Passport'}
+          className="custom-modal"
+          closeIcon={<CloseOutlined style={{ color: '#fff' }} />}
+          style={{ maxWidth: 600, padding: '40px 40px', backgroundColor: 'transparent' }}
+          bodyStyle={{ backgroundColor: '#0e131d', padding: '40px 40px', borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}
+          width={'90%'}
+          st
+          visible={modalVisible}
+          footer={null}
+          onCancel={() => { setModalVisible(false) }}
+        >
+          <Row justify="center">
+            <Col xs={22} sm={22} md={14} lg={14}><img style={{ width: '100%' }} src={qrcode} /></Col>
+          </Row>
+        </Modal>
+      </Card>
+    )
+  }
 
   return (
     <Card
@@ -299,12 +430,13 @@ const EventList = ({ setTotalTickets }) => {
       }}
     >
       {eventElement}
+      <div style={{ textAlign: 'center', color: '#0e131d', fontWeight: 'bold' }}>Total No. Events: {eventCount}</div>
     </Card>
   );
 };
 
 const Event = ({ detail }) => {
-  let { event, total } = detail;
+  let { event, ticket_own } = detail;
   return (
     <Row align="middle" tyle={{ backgroundColor: "#fff", height: 100 }}>
       <Col span={5}>
@@ -330,7 +462,7 @@ const Event = ({ detail }) => {
                 objectFit: "cover",
                 borderRadius: 50,
               }}
-              src={event.approval_doc}
+              src={event.approval_doc || ''}
             />
           </Col>
         </Row>
@@ -353,7 +485,7 @@ const Event = ({ detail }) => {
         </Row>
       </Col>
       <Col span={4} style={{ fontWeight: "bold", color: "#2b2b2b" }}>
-        <span style={{ fontSize: 24 }}> {total} </span> TKS
+        <span style={{ fontSize: 24 }}> {ticket_own} </span> TKS
         {/* <Icon type="ticket" /> */}
       </Col>
     </Row>

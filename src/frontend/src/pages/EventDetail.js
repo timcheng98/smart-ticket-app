@@ -67,7 +67,7 @@ const EventDetail = () => {
           >
             <Col xs={0} sm={0} md={24} lg={24}>
               <Row align="middle" justify="end">
-                <Col span={6}>
+                <Col md={10} lg={7}>
                   <Card style={{ borderRadius: 25 }} hoverable>
                     <EventForm event={location.state.event} />
                   </Card>
@@ -93,7 +93,7 @@ const EventDetail = () => {
         <Detail event={event} />
       </Content>
       <Content>
-        <RelatedEvents />
+        <RelatedEvents event={event} />
       </Content>
     </AppLayout>
   );
@@ -127,11 +127,14 @@ const EventForm = ({ tickets, event }) => {
     let ticketArea = _.map(tickets, "area");
     ticketArea = _.uniq(ticketArea);
     setTicketArr(tickets);
+    setTicketAreaOptionLoading(true);
     setTicketAreaArr(ticketsMapPrice);
+    setTicketAreaOptionLoading(false);
     setEventArr(events);
   };
 
   const [ticketAreaOption, setTicketAreaOption] = useState(null);
+  const [ticketAreaOptionLoading, setTicketAreaOptionLoading] = useState(true);
   useEffect(() => {
     getTicketAreaOption()
   }, [ticketAreaArr]);
@@ -149,12 +152,12 @@ const EventForm = ({ tickets, event }) => {
           selectedTickets={selectedTickets}
           ticketAreaArr={item}
           price={price}
-          // type={1}
+        // type={1}
         />
       );
     });
 
-    setTicketAreaOption(areaOptions)
+    setTicketAreaOption(areaOptions);
   };
 
   const [stage, setStage] = useState("preview");
@@ -184,7 +187,7 @@ const EventForm = ({ tickets, event }) => {
         justify="center"
         layout="vertical"
         gutter={[24, 0]}
-        // style={{ padding: 50 }}
+      // style={{ padding: 50 }}
       >
         <Col span={22}>
           <Row>
@@ -242,73 +245,60 @@ const EventForm = ({ tickets, event }) => {
 
   if (stage === "checkout") {
     return (
-      <Row
-        justify="center"
-        align="bottom"
-        layout="vertical"
-        gutter={[24, 12]}
-        style={{ marginTop: 10 }}
-      >
-        <Col span={22} style={{ fontWeight: "bold" }}>
-          Select Ticket
+      <Spin spinning={ticketAreaOptionLoading}>
+        <Row
+          justify="center"
+          align="bottom"
+          layout="vertical"
+          gutter={[24, 12]}
+          style={{ marginTop: 10 }}
+        >
+          <Col span={22} style={{ fontWeight: "bold" }}>
+            Select Ticket
         </Col>
-        {/* <TicketArea ticketAreaArr={ticketAreaArr} /> */}
-        {ticketAreaOption}
-        {/* <AreaPicker
-					tickets={tickets}
-					setSelectedTickets={setSelectedTickets}
-					selectedTickets={selectedTickets}
-					type={2}
-				/> */}
+          {ticketAreaOption}
 
-        <Col span={22}>
-          <Button
-            loading={loading}
-            shape="round"
-            style={{
-              marginTop: 20,
-              width: "100%",
-              background: "linear-gradient(90deg,#0e131d,#060a10 90.65%)",
-              color: "#fff",
-              height: 50,
-              fontWeight: "bold",
-            }}
-            onClick={async () => {
-              if (user.wallet_address === '') {
-                return message.warning('invalid address')
-              }
-              setLoading(true);
-              let tickets = await Service.call('post', '/api/sc/event/ticket/onsell', { selectedArea })
-              // console.log(selectedTickets[selectedArea])
-              // console.log(selectedTickets[selectedArea])
-              // let tickets = await eventAPI.getOnSellTicketsByArea(selectedArea);
-              let totalSelectedTicket = selectedTickets[selectedArea];
-              console.log('totalSelectedTicket', totalSelectedTicket)
-              let result = await Service.call('post', '/api/sc/event/ticket/buy', { address: user.wallet_address, tickets, total: totalSelectedTicket })
-
-              console.log('result', result)
-
-              setLoading(false)
-            }}
-          >
-            Checkout
+          <Col span={22}>
+            <Button
+              loading={loading}
+              shape="round"
+              style={{
+                marginTop: 20,
+                width: "100%",
+                background: "linear-gradient(90deg,#0e131d,#060a10 90.65%)",
+                color: "#fff",
+                height: 50,
+                fontWeight: "bold",
+              }}
+              onClick={async () => {
+                if (user.user_id <= 0) return message.warning('Please Login First')
+                if (user.wallet_address === '') {
+                  return message.warning('invalid address')
+                }
+                setLoading(true);
+                let tickets = await Service.call('post', '/api/sc/event/ticket/onsell', { selectedArea })
+                let totalSelectedTicket = selectedTickets[selectedArea];
+                let result = await Service.call('post', '/api/sc/event/ticket/buy', { address: user.wallet_address, tickets, total: totalSelectedTicket })
+                setLoading(false)
+              }}
+            >
+              Checkout
           </Button>
-          {/* <span>Back</span> */}
-          <Button
-            // shape='round'
-            type="text"
-            style={{
-              width: "100%",
-              fontSize: 12,
-              color: "#9a9a9a",
-              padding: 0,
-            }}
-            onClick={() => setStage("preview")}
-          >
-            Back
+            <Button
+              type="text"
+              style={{
+                width: "100%",
+                fontSize: 12,
+                color: "#9a9a9a",
+                padding: 0,
+              }}
+              onClick={() => setStage("preview")}
+            >
+              Back
           </Button>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </Spin>
     );
   }
 
@@ -324,9 +314,9 @@ const EventForm = ({ tickets, event }) => {
 const Detail = ({ event }) => {
   return (
     <Row gutter={[0, 0]} style={{ color: "#fff", marginTop: 50 }}>
-      <Col xs={24} sm={24} md={16} lg={16}>
+      <Col xs={24} sm={24} md={24} lg={16}>
         <Row gutter={[24, 24]}>
-          <Col xs={24} sm={24} md={16} lg={20}>
+          <Col xs={24} sm={24} md={24} lg={20}>
             <Title level={1} style={{ color: "#fff" }}>
               {event.name}
             </Title>
@@ -334,18 +324,18 @@ const Detail = ({ event }) => {
               style={{ borderColor: "#fff", borderWidth: 4, borderRadius: 8 }}
             />
           </Col>
-          <Col xs={24} sm={24} md={16} lg={20}>
+          <Col xs={24} sm={24} md={24} lg={20}>
             <Title level={2} style={{ color: "#fff" }}>
               Description
             </Title>
           </Col>
-          <Col xs={24} sm={24} md={16} lg={20}>
+          <Col xs={24} sm={24} md={24} lg={20}>
             <pre style={{ color: "#fff" }}>{event.long_desc}</pre>
           </Col>
         </Row>
 
         <Row gutter={[24, 12]} style={{ color: "#fff", marginTop: 30 }}>
-          <Col xs={24} sm={24} md={16} lg={20}>
+          <Col xs={24} sm={24} md={24} lg={20}>
             <Title level={3} style={{ color: "#fff" }}>
               Hour
             </Title>
@@ -363,12 +353,12 @@ const Detail = ({ event }) => {
           gutter={[24, 12]}
           style={{ color: "#fff", marginTop: 30, marginBottom: 30 }}
         >
-          <Col xs={24} sm={24} md={16} lg={20}>
+          <Col xs={24} sm={24} md={24} lg={20}>
             <Title level={3} style={{ color: "#fff" }}>
               How can I contact the organizer with any questions?
             </Title>
           </Col>
-          <Col xs={24} sm={24} md={16} lg={20}>
+          <Col xs={24} sm={24} md={24} lg={20}>
             <Text style={{ color: "#fff" }}>
               If you have any questions, please contact us with {event.email} /{" "}
               {event.contact}
@@ -376,22 +366,22 @@ const Detail = ({ event }) => {
           </Col>
         </Row>
       </Col>
-      <Col xs={24} sm={24} md={16} lg={8}>
-        <Row gutter={[0, 24]} justify="center">
-          <Col xs={24} sm={24} md={16} lg={20}>
+      <Col xs={24} sm={24} md={24} lg={8}>
+        <Row gutter={[0, 24]} >
+          <Col xs={24} sm={24} md={24} lg={20}>
             <Title level={2} style={{ color: "#fff" }}>
               Event Location
             </Title>
           </Col>
-          <Col xs={24} sm={24} md={16} lg={20}>
-            <div style={{ textAlign: "center" }}>
+          <Col xs={24} sm={24} md={24} lg={24}>
+            <div style={{ textAlign: "" }}>
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15282225.79979123!2d73.7250245393691!3d20.750301298393563!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30635ff06b92b791%3A0xd78c4fa1854213a6!2sIndia!5e0!3m2!1sen!2sin!4v1587818542745!5m2!1sen!2sin"
                 height="400"
                 width="100%"
                 // allowFullscreen=''
                 aria-hidden="false"
-                // tabindex='0'
+              // tabindex='0'
               ></iframe>
             </div>
           </Col>
@@ -478,21 +468,21 @@ const Detail = ({ event }) => {
   );
 };
 
-const RelatedEvents = () => {
+const RelatedEvents = ({event}) => {
   return (
     <div style={{ margin: "100px 0" }}>
       <Row gutter={[0, 24]}>
         <Col span={24}>
           <Title level={3} style={{ color: "#fff" }}>
-            Others Event You May Like
+            Recommended Suggestions
           </Title>
         </Col>
       </Row>
-      <Row justify="center">
-        <Col span={22}>
-          <EventsWithSlider />
-        </Col>
-      </Row>
+      {/* <Row justify="center"> */}
+        {/* <Col span={24}> */}
+          <EventsWithSlider event={event} />
+        {/* </Col> */}
+      {/* </Row> */}
     </div>
   );
 };
@@ -514,6 +504,7 @@ const AreaPicker = ({
         </Col>
         <Col span={10} style={{ fontWeight: "bold" }}>
           <Select
+            dropdownClassName="custom-dropdown"
             onChange={(selectedArea) => {
               setAreaPicked((prev) => {
                 setSelectedTickets({ [selectedArea]: 1 });

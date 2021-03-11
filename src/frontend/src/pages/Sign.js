@@ -8,22 +8,20 @@ import {
   Tabs,
   notification,
 } from "antd";
+import { useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from "react-redux";
 import * as Service from "../../src/core/Service";
-
 import AppLayout from "../components/AppLayout";
-
+import { setUser, setAuth } from '../redux/actions/common'
 
 const { TabPane } = Tabs;
 
 const Sign = () => {
-  const app = useSelector((state) => state.app);
-  const dispatch = useDispatch();
 
   return (
     <AppLayout>
-      <Row justify="center" style={{ height: "65vh", marginTop: 100 }}>
-        <Col span={6}>
+      <Row justify="center" style={{ height: "65vh", marginTop: 60 }}>
+        <Col xs={22} sm={22}  md={6} lg={6} >
           <Tabs
             centered
             size="large"
@@ -44,19 +42,22 @@ const Sign = () => {
 
 const Login = () => {
   const [form] = Form.useForm();
-
-	useEffect(() => {
-		onFinish()
-	}, [])
+  const dispatch = useDispatch();
+  const history = useHistory()
+	// useEffect(() => {
+	// 	onFinish()
+	// }, [])
 
   const onFinish = async (formData) => {
-    console.log(formData);
-    let result = await Service.call("get", "/api/user");
-
-		console.log('result', result)
+    let result = await Service.call("post", "/api/login/user", formData);
+    console.log('result', result);
     if (result.status < 1) {
       return notification.warning({ message: result.errorMessage });
     }
+    notification.success({ message: 'Sucessful Login.' });
+    dispatch(setAuth(true));
+    dispatch(setUser(result));
+    history.push('/account')
   };
 
   return (
@@ -108,15 +109,25 @@ const Login = () => {
 
 const Register = () => {
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const onFinish = async (formData) => {
     console.log(formData);
-    let result = await Service.call("post", "/api/user", formData);
+    let result = await Service.call("post", "/api/user/register", formData);
     if (result.status < 1) {
       return notification.warning({ message: result.errorMessage });
     }
-
+    notification.success({ message: 'Sucessful Registered.' });
     localStorage.setItem("keystore", JSON.stringify(result));
+
+    result = await Service.call("post", "/api/login/user", formData);
+    if (result.status < 1) {
+      return notification.warning({ message: result.errorMessage });
+    }
+    dispatch(setAuth(true));
+    dispatch(setUser(result));
+    history.push('/account');
   };
 
   return (

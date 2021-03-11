@@ -19,29 +19,34 @@ const Navbar = (props) => {
     <Header style={styles.container}>
       <Row align="middle" style={styles.row}>
         {/* Mobile Version */}
-        <Col>
-          <Col xs={6} sm={6} md={0} lg={0} xl={0}>
-            <MenuOutlined
-              style={{ ...styles.icon, color: "#7e96b8", fontSize: 20 }}
-              onClick={() => {
-                dispatch(CommonAction.setDrawerVisible(true));
-              }}
-            />
-          </Col>
-          <Col xs={6} sm={6} md={0} lg={0} xl={0}>
-            <Row justify="center">
-              <Col>
-                <Logo />
-              </Col>
-            </Row>
-          </Col>
+        <Col xs={24} sm={24} md={0} lg={0} xl={0}>
+          <Row>
+            <Col xs={6} sm={6} md={0} lg={0} xl={0}>
+              <MenuOutlined
+                style={{ ...styles.icon, color: "#7e98b8", fontSize: 26, }}
+                onClick={() => {
+                  dispatch(CommonAction.setDrawerVisible(true));
+                }}
+              />
+            </Col>
+            <Col xs={12} sm={12} md={0} lg={0} xl={0}>
+              <Row justify="center">
+                <Col>
+                  <Logo />
+                </Col>
+              </Row>
+            </Col>
+            <Col xs={6} sm={6} md={0} lg={0} xl={0}>
+
+            </Col>
+          </Row>
         </Col>
         <Col xs={0} sm={0} md={24} lg={24} xl={24}>
           <Row>
             <Col xs={0} sm={0} md={6} lg={5} xl={4}>
               <Logo />
             </Col>
-            <Col xs={0} sm={0} md={6} lg={4} xl={3}>
+            <Col xs={0} sm={0} md={8} lg={8} xl={6}>
               <Row justify="space-between" style={{ color: "#fff" }}>
                 <Link to="/events">
                   <Col
@@ -65,6 +70,17 @@ const Navbar = (props) => {
                     Account
                   </Col>
                 </Link>
+                <Link to="/marketplace">
+                  <Col
+                    style={{
+                      color: "#7e96b8",
+                      fontWeight: "500",
+                      fontSize: 16,
+                    }}
+                  >
+                    Marketplace
+                  </Col>
+                </Link>
               </Row>
             </Col>
           </Row>
@@ -80,6 +96,7 @@ const styles = {
     // boxShadow: '0 4px 2px -2px rgba(0,0,0,.2)',
     // marginBottom: 4,
     height: 80,
+    padding: 20
   },
   row: {
     height: "100%",

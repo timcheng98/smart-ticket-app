@@ -29,6 +29,31 @@ body {
   color: #fff;
 }
 
+
+.custom-form .ant-select-selector, .custom-form .ant-select-selection-search-input, .custom-form .anticon {
+  background-color: transparent !important;
+  color: #fff !important;
+
+}
+
+
+.custom-dropdown {
+  padding: 0px;
+}
+
+.custom-dropdown .ant-select-item {
+  background-color: #7e96b8;
+}
+
+.custom-dropdown .ant-select-item-option-content {
+  color: #fff;
+}
+
+.ticket-form label , .ticket-form .ant-form-item-label {
+  text-align: center;
+  color: #fff;
+}
+
 .custom-form .ant-radio-inner {
   background-color: transparent;
   border-color: #fff;
@@ -47,6 +72,64 @@ body {
   border-color: #fff;
 }
 
+.custom-table th, .custom-table div,  .custom-table .antd-table-cell {
+  color: #fafafa;
+  background-color: transparent !important ;
+}
+
+.custom-table table {
+  border: 1px solid #7e96b844;
+  border-radius: 15px;
+}
+
+.custom-table .ant-table-thead > tr > th, .custom-table .ant-table-tbody > tr > td {
+  color: #fafafa;
+  text-align: center;
+  border-color: #7e96b844;
+}
+
+.custom-table .ant-table-tbody tr:last-child  td {
+  border-color: transparent;
+}
+
+.custom-table tr:hover, .custom-table .ant-table-tbody > tr.ant-table-row:hover > td {
+  background-color: rgba(29, 43, 88, 0.5);
+}
+
+.custom-table .ant-pagination-item-link, .custom-table .ant-pagination-item  {
+  background-color: transparent;
+  border-color: #7e96b8;
+}
+
+.custom-table .ant-table-tbody > tr.ant-table-placeholder:hover > td {
+  background-color: transparent;
+}
+
+.custom-table .anticon  {
+  color: #7e96b8 !important;
+  transform: translateY(-20%);
+}
+
+.custom-table .ant-pagination-item a {
+  color: #7e96b8 !important;
+}
+
+.custom-modal .ant-modal-content {
+  background-color: transparent;
+  /* border: 1.5px solid #fafafa; */
+  /* border-radius: 50%; */
+}
+
+.custom-modal .ant-modal-header {
+  background-color: #0e131d;
+  border-color: #7e96b8;
+  padding: 20px 40px;
+}
+
+.custom-modal .ant-modal-title {
+  color: #fff
+}
+
 
 .ant-form-item-children-icon {
   top: 40% !important
@@ -54,6 +137,14 @@ body {
 
 .custom-input svg {
   color: #fff;
+}
+
+/* .related-event-slider .slick-track {
+  width: 80vw !important
+} */
+
+.slick-slide {
+  margin: 0px
 }
 
 

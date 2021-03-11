@@ -55,7 +55,8 @@ export function setDrawerVisible(visible) {
 
 export function setUser(_user) {
   let user = {
-    user_id: 0
+    user_id: 0,
+    is_user: false
   }
   if (_user.user_id > 0) {
     user = {

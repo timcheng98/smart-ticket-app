@@ -10,6 +10,7 @@ import EventList from '../pages/EventList';
 import EventDetail from '../pages/EventDetail';
 import Account from '../pages/Account';
 import Sign from '../pages/Sign';
+import Marketplace from '../pages/Marketplace';
 import NotFound from '../pages/NotFound';
 
 
@@ -20,6 +21,7 @@ const Path = (props) => {
         <Public path="/sign" component={Sign} exact />
         <Public path="/events" component={EventList} exact />
         <Public path="/event" component={EventDetail} exact />
+        <Public path="/marketplace" component={Marketplace} exact />
         {/* <Private path="/home" component={Home} exact  /> */}
         <Public path="/" component={EventList} exact />
         <Private path="/account" component={Account} exact />

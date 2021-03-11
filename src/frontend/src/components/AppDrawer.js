@@ -97,14 +97,14 @@ const AppDrawer = (props) => {
       onClose={() => { dispatch(setDrawerVisible(false)) }}
       visible={visible}
       key="left"
-      bodyStyle={{padding: 0, paddingBottom: 50, backgroundColor: '#060a10'}}
-      drawerStyle={{padding: 0}}
+      bodyStyle={{ padding: 0, paddingBottom: 50, backgroundColor: '#060a10' }}
+      drawerStyle={{ padding: 0 }}
     >
-      <Row style={{marginTop: 60, maxWidth: '100%'}}>
+      <Row style={{ marginTop: 60, maxWidth: '100%' }}>
         <Col xs={20} offset={1}>
           <Search
             defaultValue=""
-            style={{marginBottom: 8}}
+            style={{ marginBottom: 8 }}
             placeholder="Search..."
             enterButton={(
               <Button
@@ -117,7 +117,7 @@ const AppDrawer = (props) => {
             )}
           />
         </Col>
-        <Divider style={{margin: '10px 0px'}} />
+        <Divider style={{ margin: '10px 0px' }} />
         <Col xs={24}>
           <Link to="/">
             <Button
@@ -132,7 +132,7 @@ const AppDrawer = (props) => {
             </Button>
           </Link>
         </Col>
-        <Divider style={{margin: '10px 0px'}} />
+        <Divider style={{ margin: '10px 0px' }} />
         <Col xs={24}>
           <Link to="/events">
             <Button
@@ -147,7 +147,22 @@ const AppDrawer = (props) => {
             </Button>
           </Link>
         </Col>
-        <Divider style={{margin: '10px 0px'}} />
+        <Divider style={{ margin: '10px 0px' }} />
+        <Col xs={24}>
+          <Link to="/marketplace">
+            <Button
+              style={styles.text}
+              className="hyperlink"
+              type="text"
+              onClick={() => {
+                dispatch(setDrawerVisible(false));
+              }}
+            >
+              Marketplace
+            </Button>
+          </Link>
+        </Col>
+        <Divider style={{ margin: '10px 0px' }} />
         <Col xs={24}>
           <Link to="/account">
             <Button
@@ -162,7 +177,7 @@ const AppDrawer = (props) => {
             </Button>
           </Link>
         </Col>
-        <Divider style={{margin: '10px 0px'}} />
+        <Divider style={{ margin: '10px 0px' }} />
         <Col xs={24}>
           <Link to="/contact">
             <Button
@@ -177,7 +192,7 @@ const AppDrawer = (props) => {
             </Button>
           </Link>
         </Col>
-        <Divider style={{margin: '10px 0px'}} />
+        <Divider style={{ margin: '10px 0px' }} />
         <Col xs={24}>
           <Link to="/contact">
             <Button
@@ -192,7 +207,7 @@ const AppDrawer = (props) => {
             </Button>
           </Link>
         </Col>
-        <Divider style={{margin: '10px 0px'}} />
+        <Divider style={{ margin: '10px 0px' }} />
         <Col xs={24}>
           <Link to="/terms">
             <Button
@@ -207,7 +222,7 @@ const AppDrawer = (props) => {
             </Button>
           </Link>
         </Col>
-        <Divider style={{margin: '10px 0px'}} />
+        <Divider style={{ margin: '10px 0px' }} />
         <Col xs={24}>
           <Link to="/privacy">
             <Button
@@ -222,7 +237,7 @@ const AppDrawer = (props) => {
             </Button>
           </Link>
         </Col>
-        <Divider style={{margin: '10px 0px'}} />
+        <Divider style={{ margin: '10px 0px' }} />
         {/* <Col xs={24}>
           {renderTextButton()}
         </Col> */}
