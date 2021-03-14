@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { EventAPI } from "../api/smart-contract/event";
 import {
   Input,
   Button,
@@ -13,6 +12,7 @@ import {
   Tag,
   message,
 } from "antd";
+import Slider from 'react-slick';
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useHistory } from "react-router-dom";
 import _ from "lodash";
@@ -33,7 +33,118 @@ const { Title, Text } = Typography;
 
 const { Option } = Select;
 
-const eventAPI = new EventAPI();
+const bannerSettings = {
+  // className: 'slider variable-width',
+  // centerMode: true,
+  dots: false,
+  infinite: true,
+  arrows: false,
+  speed: 1000,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  autoplay: true,
+  fade: true,
+  autoplaySpeed: 3000,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        infinite: false,
+        dots: false
+      }
+    },
+    {
+      breakpoint: 800,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        initialSlide: 1,
+        dots: true,
+        // arrows: false,
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        dots: false
+      }
+    }
+  ]
+};
+
+const Banner = ({ event }) => {
+  const location = useLocation();
+
+  return (
+    <div>
+      {/* <Col xs={24} sm={24} md={24} lg={0} xl={0}> */}
+
+      <div className="event-banner" style={{
+        width: '100%',
+        height: '40vw',
+        maxHeight: 658,
+        position: 'relative',
+      }}>
+        <Slider {...bannerSettings} style={{
+          width: '100%',
+          height: '40vw',
+          maxHeight: 658,
+          position: 'relative',
+        }}>
+          <div>
+            <img
+              style={{
+                width: '100%',
+                height: '40vw',
+                maxHeight: 658,
+                objectFit: 'cover',
+                position: 'relative',
+              }}
+              src={event.banner_1}
+              alt='banner_home'
+            />
+          </div>
+          {event.banner_2 !== '' &&
+            <div>
+              <img
+                style={{
+                  width: '100%',
+                  height: '40vw',
+                  maxHeight: 658,
+                  objectFit: 'cover',
+                  position: 'relative',
+                }}
+                src={event.banner_2}
+                alt='banner_home'
+              />
+            </div>
+          }
+        </Slider>
+
+        <Row>
+          <Col xs={0} sm={0} md={24} lg={24} xl={24} style={{ position: 'absolute', right: '2%', top: '15%' }}>
+            {/* <div > */}
+              <Row>
+                <Col md={20} lg={20}>
+                  <Card style={{ borderRadius: 25 }} hoverable>
+                    <EventForm event={location.state.event} />
+                  </Card>
+                  </Col>
+           </Row>
+            {/* </div> */}
+         </Col>
+        
+          </Row>
+       
+      </div>
+        {/* </Col> */}
+      </div>
+  );
+};
 
 const EventDetail = () => {
   const [event, setEvent] = useState({});
@@ -41,24 +152,39 @@ const EventDetail = () => {
   const location = useLocation();
 
   useEffect(() => {
-    getInitialData();
+        getInitialData();
     setLoading(false);
   }, [location]);
 
   const getInitialData = async () => {
-    setEvent(location.state.event);
+        setEvent(location.state.event);
   };
 
   if (loading) return null;
 
   return (
-    <AppLayout>
-      <Content fullWidth>
-        <div>
-          <Row
+      <AppLayout>
+        <Content fullWidth>
+          <div style={{marginTop: 30}}>
+            <Banner event={event} />
+            <Row>
+          <Col xs={24} sm={24} md={0} lg={0} xl={0}>
+         <Row justify="center" style={{marginTop: 40}} className="event-form">
+                <Col span={22}>
+                  <Card style={{ borderRadius: 25, zIndex: 2 }} hoverable>
+                    <EventForm event={location.state.event} />
+                  </Card>
+                  </Col>
+           </Row>
+         </Col>
+            </Row>
+            {/* <Slider {...bannerSettings} style={{ margin: 0, padding: 0, width: '100%' }}>
+            {banners}
+          </Slider> */}
+            {/* <Row
             align="middle"
             style={{
-              backgroundImage: `url('${event.approval_doc}')`,
+              backgroundImage: `url('${event.banner_2}')`,
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
               minHeight: 500,
@@ -86,20 +212,20 @@ const EventDetail = () => {
                 </Col>
               </Row>
             </Col>
-          </Row>
-        </div>
-      </Content>
-      <Content>
-        <Detail event={event} />
-      </Content>
-      <Content>
-        <RelatedEvents event={event} />
-      </Content>
-    </AppLayout>
+          </Row> */}
+          </div>
+        </Content>
+        <Content>
+          <Detail event={event} />
+        </Content>
+        <Content>
+          <RelatedEvents event={event} />
+        </Content>
+      </AppLayout>
   );
 };
 
-const EventForm = ({ tickets, event }) => {
+const EventForm = ({ tickets, event}) => {
   const [eventArr, setEventArr] = useState([]);
   const [ticketAreaArr, setTicketAreaArr] = useState([]);
   const [ticketArr, setTicketArr] = useState([]);
@@ -109,19 +235,19 @@ const EventForm = ({ tickets, event }) => {
   const user = useSelector(state => state.app.user)
 
   useEffect(() => {
-    setLoading(true);
+        setLoading(true);
     setTicket();
     setLoading(false);
   }, []);
 
   const setTicket = async () => {
-    let tickets = await Service.call("get", "/api/sc/event/ticket");
+        let tickets = await Service.call("get", "/api/sc/event/ticket");
     tickets = tickets[location.state.event.eventId];
     let events = await Service.call("get", "/api/sc/event");
     let ticketGroupPrice = _.groupBy(tickets, "price");
     let ticketsMapPrice = {};
     _.each(ticketGroupPrice, (item, key) => {
-      let area = _.uniq(_.map(item, "area"));
+        let area = _.uniq(_.map(item, "area"));
       ticketsMapPrice[key] = area;
     });
     let ticketArea = _.map(tickets, "area");
@@ -136,25 +262,25 @@ const EventForm = ({ tickets, event }) => {
   const [ticketAreaOption, setTicketAreaOption] = useState(null);
   const [ticketAreaOptionLoading, setTicketAreaOptionLoading] = useState(true);
   useEffect(() => {
-    getTicketAreaOption()
-  }, [ticketAreaArr]);
+        getTicketAreaOption()
+      }, [ticketAreaArr]);
 
   const getTicketAreaOption = () => {
-    let areaOptions = [];
+        let areaOptions = [];
 
     _.map(ticketAreaArr, (item, price) => {
-      areaOptions.push(
-        <AreaPicker
-          key={item}
-          tickets={tickets}
-          setSelectedTickets={setSelectedTickets}
-          setSelectedArea={setSelectedArea}
-          selectedTickets={selectedTickets}
-          ticketAreaArr={item}
-          price={price}
-        // type={1}
-        />
-      );
+        areaOptions.push(
+          <AreaPicker
+            key={item}
+            tickets={tickets}
+            setSelectedTickets={setSelectedTickets}
+            setSelectedArea={setSelectedArea}
+            selectedTickets={selectedTickets}
+            ticketAreaArr={item}
+            price={price}
+          // type={1}
+          />
+        );
     });
 
     setTicketAreaOption(areaOptions);
@@ -163,23 +289,6 @@ const EventForm = ({ tickets, event }) => {
   const [stage, setStage] = useState("preview");
   const [selectedTickets, setSelectedTickets] = useState({});
   const [selectedArea, setSelectedArea] = useState("");
-
-  const onFinish = async (values) => {
-    console.log("onFinish() START");
-
-    let tickets = await eventAPI.getTicketAll();
-    let totalTickets = [];
-
-    tickets = _.map(tickets, (item) =>
-      item.area === values.area ? item : null
-    );
-    tickets = _.compact(tickets);
-
-    await eventAPI.autoSignTicketTransaction({ tickets, total: values.total });
-
-    console.log("onFinish() END");
-    // tickets = _.map(tickets, values.area);
-  };
 
   if (stage === "preview") {
     return (
@@ -208,20 +317,22 @@ const EventForm = ({ tickets, event }) => {
         </Col>
         <Divider />
         <Col span={22}>
-          <Row>
-            <Col span={4}>
-              <AimOutlined style={{ fontSize: 28 }} />
-            </Col>
-            <Col span={20}>
-              <span>{event.venue}</span>
-              <br />
-              <span>{event.region}</span>
-              <br />
-              <span>
-                {event.district}, {event.country}
-              </span>
-            </Col>
-          </Row>
+          <a target="_blank" href={`https://maps.google.com/maps?q=${event.latitude}, ${event.longitude}&z=20&language=zh-HK`}>
+            <Row style={{ color: '#0e131d' }} >
+              <Col span={4}>
+                <AimOutlined style={{ fontSize: 28 }} />
+              </Col>
+              <Col span={20}>
+                <span>{event.venue}</span>
+                <br />
+                <span>{event.district}</span>
+                <br />
+                <span>
+                  {event.region}, {event.country}
+                </span>
+              </Col>
+            </Row>
+          </a>
         </Col>
         <Divider />
         <Col span={22}>
@@ -229,10 +340,11 @@ const EventForm = ({ tickets, event }) => {
             shape="round"
             style={{
               width: "100%",
-              background: "linear-gradient(90deg,#0e131d,#060a10 90.65%)",
+              backgroundColor: "#0e131d",
               color: "#fff",
               height: 50,
               fontWeight: "bold",
+              zIndex: 2,
             }}
             onClick={() => setStage("checkout")}
           >
@@ -279,7 +391,8 @@ const EventForm = ({ tickets, event }) => {
                 let tickets = await Service.call('post', '/api/sc/event/ticket/onsell', { selectedArea })
                 let totalSelectedTicket = selectedTickets[selectedArea];
                 let result = await Service.call('post', '/api/sc/event/ticket/buy', { address: user.wallet_address, tickets, total: totalSelectedTicket })
-                setLoading(false)
+                setLoading(false);
+                message.success('Checkout Successfully.')
               }}
             >
               Checkout
@@ -305,306 +418,273 @@ const EventForm = ({ tickets, event }) => {
   if (loading) return null;
 
   return (
-    <Row justify="center" layout="vertical" gutter={[24, 0]}>
-      <Spin spinning={true} />
-    </Row>
+      <Row justify="center" layout="vertical" gutter={[24, 0]}>
+        <Spin spinning={true} />
+      </Row>
   );
 };
 
-const Detail = ({ event }) => {
+const Detail = ({ event}) => {
   return (
-    <Row gutter={[0, 0]} style={{ color: "#fff", marginTop: 50 }}>
-      <Col xs={24} sm={24} md={24} lg={16}>
-        <Row gutter={[24, 24]}>
-          <Col xs={24} sm={24} md={24} lg={20}>
-            <Title level={1} style={{ color: "#fff" }}>
-              {event.name}
+      <Row gutter={[0, 0]} style={{ color: "#fff", marginTop: 50 }}>
+        <Col xs={24} sm={24} md={24} lg={16}>
+          <Row gutter={[24, 24]}>
+            <Col xs={24} sm={24} md={24} lg={20}>
+              <Title level={1} style={{ color: "#fff" }}>
+                {event.name}
+              </Title>
+              <Divider
+                style={{ borderColor: "#fff", borderWidth: 4, borderRadius: 8 }}
+              />
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={20}>
+              <Title level={2} style={{ color: "#fff" }}>
+                Description
             </Title>
-            <Divider
-              style={{ borderColor: "#fff", borderWidth: 4, borderRadius: 8 }}
-            />
-          </Col>
-          <Col xs={24} sm={24} md={24} lg={20}>
-            <Title level={2} style={{ color: "#fff" }}>
-              Description
-            </Title>
-          </Col>
-          <Col xs={24} sm={24} md={24} lg={20}>
-            <pre style={{ color: "#fff" }}>{event.long_desc}</pre>
-          </Col>
-        </Row>
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={20}>
+              <pre style={{ color: "#fff" }}>{event.long_desc}</pre>
+            </Col>
+          </Row>
 
-        <Row gutter={[24, 12]} style={{ color: "#fff", marginTop: 30 }}>
-          <Col xs={24} sm={24} md={24} lg={20}>
-            <Title level={3} style={{ color: "#fff" }}>
-              Hour
+          <Row gutter={[24, 12]} style={{ color: "#fff", marginTop: 30 }}>
+            <Col xs={24} sm={24} md={24} lg={20}>
+              <Title level={3} style={{ color: "#fff" }}>
+                Hour
             </Title>
-          </Col>
-          <Col>
-            <Text style={{ color: "#fff" }}>
-              {moment
-                .unix(event.start_time)
-                .format("YYYY-MM-DD - dddd, HH:mm a")}{" "}
+            </Col>
+            <Col>
+              <Text style={{ color: "#fff" }}>
+                {moment
+                  .unix(event.start_time)
+                  .format("YYYY-MM-DD - dddd, HH:mm a")}{" "}
               -{moment.unix(event.end_time).format("HH:mm a")}
-            </Text>
-          </Col>
-        </Row>
-        <Row
-          gutter={[24, 12]}
-          style={{ color: "#fff", marginTop: 30, marginBottom: 30 }}
-        >
-          <Col xs={24} sm={24} md={24} lg={20}>
-            <Title level={3} style={{ color: "#fff" }}>
-              How can I contact the organizer with any questions?
+              </Text>
+            </Col>
+          </Row>
+          <Row
+            gutter={[24, 12]}
+            style={{ color: "#fff", marginTop: 30, marginBottom: 30 }}
+          >
+            <Col xs={24} sm={24} md={24} lg={20}>
+              <Title level={3} style={{ color: "#fff" }}>
+                How can I contact the organizer with any questions?
             </Title>
-          </Col>
-          <Col xs={24} sm={24} md={24} lg={20}>
-            <Text style={{ color: "#fff" }}>
-              If you have any questions, please contact us with {event.email} /{" "}
-              {event.contact}
-            </Text>
-          </Col>
-        </Row>
-      </Col>
-      <Col xs={24} sm={24} md={24} lg={8}>
-        <Row gutter={[0, 24]} >
-          <Col xs={24} sm={24} md={24} lg={20}>
-            <Title level={2} style={{ color: "#fff" }}>
-              Event Location
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={20}>
+              <Text style={{ color: "#fff" }}>
+                If you have any questions, please contact us with email at {event.email} or phone {event.contact_no}
+                {event.contact}
+              </Text>
+            </Col>
+          </Row>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={8}>
+          <Row gutter={[0, 24]} >
+            <Col xs={24} sm={24} md={24} lg={20}>
+              <Title level={2} style={{ color: "#fff" }}>
+                Event Location
             </Title>
-          </Col>
-          <Col xs={24} sm={24} md={24} lg={24}>
-            <div style={{ textAlign: "" }}>
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15282225.79979123!2d73.7250245393691!3d20.750301298393563!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30635ff06b92b791%3A0xd78c4fa1854213a6!2sIndia!5e0!3m2!1sen!2sin!4v1587818542745!5m2!1sen!2sin"
-                height="400"
-                width="100%"
-                // allowFullscreen=''
-                aria-hidden="false"
-              // tabindex='0'
-              ></iframe>
-            </div>
-          </Col>
-          <Col></Col>
-        </Row>
-        <Row gutter={[0, 24]}>
-          <Col xs={24} sm={24} md={24} lg={24}>
-            <Title level={2} style={{ color: "#fff" }}>
-              Tags
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={24}>
+              <div>
+                <iframe src={`https://maps.google.com/maps?q=${event.latitude}, ${event.longitude}&z=17&output=embed&language=zh-HK`} width="100%" height="400" frameborder="0" ></iframe>
+              </div>
+            </Col>
+            <Col></Col>
+          </Row>
+          <Row gutter={[0, 24]}>
+            <Col xs={24} sm={24} md={24} lg={24}>
+              <Title level={2} style={{ color: "#fff", margin: 0 }}>
+                Categories
             </Title>
-          </Col>
-          <Col xs={24} sm={24} md={18} lg={18}>
-            <Tag
-              style={{
-                padding: "8px 20px",
-                fontWeight: "bold",
-                margin: 8,
-                backgroundColor: "#ffffff00",
-                color: "#fff",
-              }}
-            >
-              Music
-            </Tag>
-            <Tag
-              style={{
-                padding: "8px 20px",
-                fontWeight: "bold",
-                margin: 8,
-                backgroundColor: "#ffffff00",
-                color: "#fff",
-              }}
-            >
-              Lastest
-            </Tag>
-            <Tag
-              style={{
-                padding: "8px 20px",
-                fontWeight: "bold",
-                margin: 8,
-                backgroundColor: "#ffffff00",
-                color: "#fff",
-              }}
-            >
-              Famouse
-            </Tag>
-            <Tag
-              style={{
-                padding: "8px 20px",
-                fontWeight: "bold",
-                margin: 8,
-                backgroundColor: "#ffffff00",
-                color: "#fff",
-              }}
-            >
-              Hotest
-            </Tag>
-            <Tag
-              style={{
-                padding: "8px 20px",
-                fontWeight: "bold",
-                margin: 8,
-                backgroundColor: "#ffffff00",
-                color: "#fff",
-              }}
-            >
-              Sing
-            </Tag>
-            <Tag
-              style={{
-                padding: "8px 20px",
-                fontWeight: "bold",
-                margin: 8,
-                backgroundColor: "#ffffff00",
-                color: "#fff",
-              }}
-            >
-              U.S.A
-            </Tag>
-          </Col>
-          <Col></Col>
-        </Row>
-      </Col>
-    </Row>
-  );
-};
-
-const RelatedEvents = ({event}) => {
-  return (
-    <div style={{ margin: "100px 0" }}>
-      <Row gutter={[0, 24]}>
-        <Col span={24}>
-          <Title level={3} style={{ color: "#fff" }}>
-            Recommended Suggestions
-          </Title>
+            </Col>
+            <Col xs={24} sm={24} md={18} lg={18}>
+              {_.map(JSON.parse(event.categories), (value) => {
+                return (
+                  <Tag
+                    style={{
+                      padding: "8px 20px",
+                      fontWeight: "bold",
+                      margin: '0px 8px',
+                      backgroundColor: "#ffffff00",
+                      color: "#fff",
+                    }}
+                  >
+                    {value.toUpperCase()}
+                  </Tag>
+                )
+              })}
+            </Col>
+            <Col></Col>
+          </Row>
+          <Row gutter={[0, 24]}>
+            <Col xs={24} sm={24} md={24} lg={24}>
+              <Title level={2} style={{ color: "#fff", margin: 0 }}>
+                Tags
+            </Title>
+            </Col>
+            <Col xs={24} sm={24} md={18} lg={18}>
+              {_.map(JSON.parse(event.tags), (value) => {
+                return (
+                  <Tag
+                    style={{
+                      padding: "8px 20px",
+                      fontWeight: "bold",
+                      margin: '0px 8px',
+                      backgroundColor: "#ffffff00",
+                      color: "#fff",
+                    }}
+                  >
+                    {value.toUpperCase()}
+                  </Tag>
+                )
+              })}
+            </Col>
+            <Col></Col>
+          </Row>
         </Col>
       </Row>
-      {/* <Row justify="center"> */}
+  );
+};
+
+const RelatedEvents = ({ event}) => {
+  return (
+      <div style={{ margin: "100px 0" }}>
+        <Row gutter={[0, 24]}>
+          <Col span={24}>
+            <Title level={3} style={{ color: "#fff" }}>
+              Recommended Suggestions
+          </Title>
+          </Col>
+        </Row>
+        {/* <Row justify="center"> */}
         {/* <Col span={24}> */}
-          <EventsWithSlider event={event} />
+        <EventsWithSlider event={event} />
         {/* </Col> */}
-      {/* </Row> */}
-    </div>
+        {/* </Row> */}
+      </div>
   );
 };
 
 const AreaPicker = ({
-  tickets,
-  setSelectedTickets,
-  setSelectedArea,
-  ticketAreaArr,
-  price,
+        tickets,
+        setSelectedTickets,
+        setSelectedArea,
+        ticketAreaArr,
+        price,
 }) => {
   const [areaPicked, setAreaPicked] = useState("");
   const [totalTicketSelected, setTotalTicketSelected] = useState(0);
   return (
-    <Col span={22}>
-      <Row gutter={[0, 12]} align="middle">
-        <Col span={6} style={{ fontWeight: "bold", color: "#060a10" }}>
-          {_.toInteger(price) !== 0 ? `$${_.toInteger(price)}` : "FREE"}
-        </Col>
-        <Col span={10} style={{ fontWeight: "bold" }}>
-          <Select
-            dropdownClassName="custom-dropdown"
-            onChange={(selectedArea) => {
-              setAreaPicked((prev) => {
-                setSelectedTickets({ [selectedArea]: 1 });
-                setSelectedArea(selectedArea);
-                setTotalTicketSelected(1);
-                return selectedArea;
-              });
-            }}
-            bordered={false}
-            placeholder="Area"
-            style={{ width: "80%", borderRadius: 15 }}
-          >
-            {ticketAreaArr.map((item) => (
-              <Option key={item} value={item}>{item}</Option>
-            ))}
-          </Select>
-        </Col>
-        <Col span={8}>
-          <Row align="middle">
-            <MinusOutlined
-              onClick={() => {
-                setTotalTicketSelected((prev) => {
-                  if (prev === 0) return 0;
-                  setSelectedTickets({
-                    [areaPicked]: --prev,
-                  });
-                  return prev;
+      <Col span={22}>
+        <Row gutter={[0, 12]} align="middle">
+          <Col span={6} style={{ fontWeight: "bold", color: "#060a10" }}>
+            {_.toInteger(price) !== 0 ? `$${_.toInteger(price)}` : "FREE"}
+          </Col>
+          <Col span={10} style={{ fontWeight: "bold" }}>
+            <Select
+              dropdownClassName="custom-dropdown"
+              onChange={(selectedArea) => {
+                setAreaPicked((prev) => {
+                  setSelectedTickets({ [selectedArea]: 1 });
+                  setSelectedArea(selectedArea);
+                  setTotalTicketSelected(1);
+                  return selectedArea;
                 });
               }}
-            />
+              bordered={false}
+              placeholder="Area"
+              style={{ width: "80%", borderRadius: 15 }}
+            >
+              {ticketAreaArr.map((item) => (
+                <Option key={item} value={item}>{item}</Option>
+              ))}
+            </Select>
+          </Col>
+          <Col span={8}>
+            <Row align="middle">
+              <MinusOutlined
+                onClick={() => {
+                  setTotalTicketSelected((prev) => {
+                    if (prev === 0) return 0;
+                    setSelectedTickets({
+                      [areaPicked]: --prev,
+                    });
+                    return prev;
+                  });
+                }}
+              />
 
-            <span style={{ margin: "0px 15px" }}>{totalTicketSelected}</span>
-            <PlusOutlined
-              onClick={() => {
-                setTotalTicketSelected((prev) => {
-                  setSelectedTickets({
-                    [areaPicked]: ++prev,
+              <span style={{ margin: "0px 15px" }}>{totalTicketSelected}</span>
+              <PlusOutlined
+                onClick={() => {
+                  setTotalTicketSelected((prev) => {
+                    setSelectedTickets({
+                      [areaPicked]: ++prev,
+                    });
+                    return prev;
                   });
-                  return prev;
-                });
-              }}
-            />
-          </Row>
-        </Col>
-      </Row>
-    </Col>
+                }}
+              />
+            </Row>
+          </Col>
+        </Row>
+      </Col>
   );
 };
 
 const Ticket = () => {
   return (
-    <div class="ticket">
-      <div class="ticket--center">
-        <div class="ticket--center--row">
-          <div class="ticket--center--col">
-            <span>Your ticket for</span>
-            <strong>The event name</strong>
+      <div class="ticket">
+        <div class="ticket--center">
+          <div class="ticket--center--row">
+            <div class="ticket--center--col">
+              <span>Your ticket for</span>
+              <strong>The event name</strong>
+            </div>
+          </div>
+          <div class="ticket--center--row">
+            <div class="ticket--center--col">
+              <span class="ticket--info--title">Date and time</span>
+              <span class="ticket--info--subtitle">Thursday, May 14 2020</span>
+              <span class="ticket--info--content">
+                7:00 am to 9:00 pm (GMT+1)
+            </span>
+            </div>
+            <div class="ticket--center--col">
+              <span class="ticket--info--title">Location</span>
+              <span class="ticket--info--subtitle">Location name</span>
+              <span class="ticket--info--content">
+                Location complete address, Town, COUNTRY
+            </span>
+            </div>
+          </div>
+          <div class="ticket--center--row">
+            <div class="ticket--center--col">
+              <span class="ticket--info--title">Ticket type</span>
+              <span class="ticket--info--content">Event category</span>
+            </div>
+            <div class="ticket--center--col">
+              <span class="ticket--info--title">Order info</span>
+              <span class="ticket--info--content">
+                Order #0123456789. Ordered By Jhon DOE
+            </span>
+            </div>
           </div>
         </div>
-        <div class="ticket--center--row">
-          <div class="ticket--center--col">
-            <span class="ticket--info--title">Date and time</span>
-            <span class="ticket--info--subtitle">Thursday, May 14 2020</span>
-            <span class="ticket--info--content">
-              7:00 am to 9:00 pm (GMT+1)
-            </span>
+        <div class="ticket--end">
+          <div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Qrcode_wikipedia_fr_v2clean.png" />
           </div>
-          <div class="ticket--center--col">
-            <span class="ticket--info--title">Location</span>
-            <span class="ticket--info--subtitle">Location name</span>
-            <span class="ticket--info--content">
-              Location complete address, Town, COUNTRY
-            </span>
-          </div>
-        </div>
-        <div class="ticket--center--row">
-          <div class="ticket--center--col">
-            <span class="ticket--info--title">Ticket type</span>
-            <span class="ticket--info--content">Event category</span>
-          </div>
-          <div class="ticket--center--col">
-            <span class="ticket--info--title">Order info</span>
-            <span class="ticket--info--content">
-              Order #0123456789. Ordered By Jhon DOE
-            </span>
+          <div>
+            <img
+              style={{ width: 100 }}
+              src="https://www.fueledbyramen.com/sites/g/files/g2000005606/f/201702/FBR_Site_Assets_ArtistPanels_OOR.svg"
+            />
           </div>
         </div>
       </div>
-      <div class="ticket--end">
-        <div>
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Qrcode_wikipedia_fr_v2clean.png" />
-        </div>
-        <div>
-          <img
-            style={{ width: 100 }}
-            src="https://www.fueledbyramen.com/sites/g/files/g2000005606/f/201702/FBR_Site_Assets_ArtistPanels_OOR.svg"
-          />
-        </div>
-      </div>
-    </div>
   );
 };
 

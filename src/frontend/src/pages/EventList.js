@@ -25,17 +25,17 @@ import "slick-carousel/slick/slick-theme.css";
 
 
 const settings = {
-  className: 'slider variable-width',
-  // centerMode: true,
-  variableWidth: true,
-  dots: true,
-  infinite: false,
-  arrows: false,
-  speed: 1000,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  autoplay: false,
-  autoplaySpeed: 3000,
+	className: 'slider variable-width',
+	// centerMode: true,
+	variableWidth: true,
+	dots: true,
+	infinite: false,
+	arrows: false,
+	speed: 1000,
+	slidesToShow: 1,
+	slidesToScroll: 1,
+	autoplay: false,
+	autoplaySpeed: 3000,
 	responsive: [
 		{
 			breakpoint: 1024,
@@ -127,7 +127,7 @@ const EventList = () => {
 	return (
 		<AppLayout>
 			<Content fullWidth>
-				<Row style={{marginTop: 30}}>
+				<Row style={{ marginTop: 30 }}>
 					<Col span={24}><Banner events={events} /></Col>
 				</Row>
 			</Content>
@@ -200,12 +200,12 @@ const Banner = ({ events }) => {
 
 	const getBanners = () => {
 		let banners = [];
-		let eventsMap = _.map(events, 'approval_doc');
+		let eventsMap = _.map(events, 'banner_1');
 		_.map(eventsMap, (src) => {
 			banners.push((
 				<div style={{ margin: 0, padding: 0 }}>
 
-					<div style={{ position: 'relative', backgroundImage: `url('${src}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', margin: 0, paddingBottom: 400, width: '100%' }} ></div>
+					<div style={{ position: 'relative', backgroundImage: `url('${src}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', margin: 0, paddingBottom: 400, width: '100%' }} ></div>
 					{/* <img
 							style={{ width: '100%', height: '100%', objectFit: 'cover', height: 400 }}
 							src={src}
@@ -228,10 +228,10 @@ const Banner = ({ events }) => {
 const EventItem = ({ event, padding }) => {
 
 	let daysLeft = '';
-	if (event.endDateSell > moment().unix()) {
-		daysLeft = `${moment.unix(event.endDateSell).fromNow()} Left`;
+	if (event.close_date > moment().unix()) {
+		daysLeft = `${moment.unix(event.close_date).fromNow()} Left`;
 	}
-
+	console.log(event.close_date > moment().unix());
 	return (
 		<Card
 			style={{
@@ -243,7 +243,7 @@ const EventItem = ({ event, padding }) => {
 			hoverable
 			bodyStyle={{ padding: padding || 0 }}
 			cover={
-				<div style={{ width: '100%', height: '100%' }}>
+				<div style={{ width: '100%', height: '100%', overflow: 'hidden', borderTopRightRadius: 15, borderTopLeftRadius: 15 }}>
 					<img
 						style={{
 							width: '100%',
@@ -254,7 +254,8 @@ const EventItem = ({ event, padding }) => {
 							height: 160,
 							borderWidth: 0,
 						}}
-						src={event.approval_doc}
+						src={event.thumbnail}
+						className="event-thumbnail"
 					/>
 					<div style={{ position: 'absolute', top: 15, right: 15 }}>
 						<Button
@@ -263,7 +264,7 @@ const EventItem = ({ event, padding }) => {
 							size='small'
 							icon={
 								<HeartFilled
-									style={{ color: '#8a8a8a', transform: 'translate(0, -15%)' }}
+									style={{ color: '#0e131d', transform: 'translate(0, -15%)' }}
 								/>
 							}
 						/>
@@ -293,7 +294,7 @@ const EventItem = ({ event, padding }) => {
 								size='small'
 								icon={
 									<ShareAltOutlined
-										style={{ color: '#8a8a8a', transform: 'translate(0, -15%)' }}
+										style={{ color: '#0e131d', transform: 'translate(0, -15%)' }}
 									/>
 								}
 							/>
@@ -303,7 +304,7 @@ const EventItem = ({ event, padding }) => {
 						<FireFilled
 							style={{
 								fontSize: 20,
-								color: '#fdcf58',
+								color: '#0e131d',
 								transform: 'translate(0, -15%)',
 							}}
 						/>
@@ -311,7 +312,7 @@ const EventItem = ({ event, padding }) => {
 				</div>
 			}
 		>
-			<Col span={24} style={{padding: 0}}>
+			<Col span={24} style={{ padding: 0 }}>
 				<Row gutter={[24, 10]}>
 					<Col span={24} style={{ fontWeight: 'bold', fontSize: 16 }}>
 						{event.name}
@@ -319,47 +320,26 @@ const EventItem = ({ event, padding }) => {
 				</Row>
 				<Row gutter={[24, 16]}>
 					<Col span={24}>
-						<Button
-							size='small'
-							style={{
-								fontSize: 10,
-								borderRadius: 15,
-								fontWeight: 'bold',
-								borderColor: 'red',
-								color: '#FFFFFF',
-								backgroundColor: 'red',
-								marginRight: 8,
-							}}
-						>
-							#HOT
-						</Button>
-						<Button
-							size='small'
-							style={{
-								fontSize: 10,
-								borderRadius: 15,
-								fontWeight: 'bold',
-								borderColor: 'red',
-								color: '#FFFFFF',
-								backgroundColor: 'red',
-								marginRight: 8,
-							}}
-						>
-							#Music
-						</Button>
-						<Button
-							size='small'
-							style={{
-								fontSize: 10,
-								borderRadius: 15,
-								fontWeight: 'bold',
-								borderColor: 'red',
-								color: '#FFFFFF',
-								backgroundColor: 'red',
-							}}
-						>
-							#Comdey
-						</Button>
+						{_.map(JSON.parse(event.tags), (value) => {
+							return (
+								<Button
+									size='small'
+									style={{
+										fontSize: 12,
+										// padding: 12,
+										transform: 'scale(0.833)',
+										borderRadius: 4,
+										fontWeight: 'bold',
+										borderColor: '#0e131d',
+										color: '#FFFFFF',
+										backgroundColor: '#0e131d',
+										marginRight: 0,
+									}}
+								>
+									#{value.toUpperCase()}
+								</Button>
+							)
+						})}
 					</Col>
 				</Row>
 				<Row gutter={[24, 0]}>
@@ -372,38 +352,44 @@ const EventItem = ({ event, padding }) => {
 						{event.fullAddress}
 					</Col>
 				</Row>
-				<Row justify='space-between' gutter={[24, 0]}>
-					<Col>
+				<Row justify='center'>
+					<Col span={24}>
 						<Link to={{
 							pathname: '/event',
 							state: { event }
 						}}>
 							<Button
+								disabled={daysLeft === ''}
+								size="large"
 								style={{
-									borderRadius: 15,
+									borderRadius: 4,
 									fontWeight: 'bold',
-									borderColor: 'red',
+									width: '100%',
+									borderColor: '#0e131d',
 									color: '#FFFFFF',
-									backgroundColor: 'red',
+									backgroundColor: '#0e131d',
 								}}
 							>
-								Buy Ticket
+								{daysLeft === '' ? 'END' : 'BUY TICKET'}
 							</Button>
 						</Link>
 					</Col>
-					<Col>
-						<Button
-							size='small'
-							style={{
-								fontSize: 10,
-								color: '#5a5a5a',
-								borderColor: '#fafafa',
-								backgroundColor: '#fafafa',
-							}}
-						>
-							{daysLeft}
-						</Button>
-					</Col>
+					{daysLeft !== '' &&
+						<Col style={{ textAlign: 'center', marginTop: 8 }}>
+							<span
+								style={{
+									textAlign: 'center',
+									fontSize: 12,
+									fontWeight: 'bold',
+									color: '#5a5a5a',
+									borderColor: '#fafafa',
+									backgroundColor: '#fafafa',
+								}}
+							>
+								{daysLeft}
+							</span>
+						</Col>
+					}
 				</Row>
 			</Col>
 		</Card>
@@ -423,7 +409,7 @@ export const Events = ({ events }) => {
 	};
 
 	return (
-		<Row gutter={[{xs: 0, sm: 0, md: 24, lg: 24}, 48]}>
+		<Row gutter={[{ xs: 0, sm: 0, md: 24, lg: 24 }, 48]}>
 			{EventList()}
 		</Row>
 	);

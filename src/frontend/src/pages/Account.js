@@ -331,7 +331,7 @@ const EventList = ({ events }) => {
     setEvenElement(eventElement);
   }
 
-  const generateQR = async text => {
+  const generateQR = async ticket => {
     try {
       const opts = {
         errorCorrectionLevel: 'L',
@@ -343,7 +343,12 @@ const EventList = ({ events }) => {
           light: "#fff"
         }
       }
-      let qrcode = await QRCode.toDataURL(text, opts);
+      let encrpyted_data = {
+        user_id: user.user_id,
+        ticket,
+        ts: moment().unix()
+      }
+      let qrcode = await QRCode.toDataURL(JSON.stringify(encrpyted_data), opts);
       setQrcode(qrcode);
     } catch (err) {
       console.error(err)

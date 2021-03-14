@@ -16,12 +16,27 @@ body {
 //   margin: 0 -20px;
 // } */
 
+.event-thumbnail:hover {
+  transform: scale(1.25);
+  transition: all .3s ease;
+}
+
+.event-thumbnail:not(:hover ){
+  transform: scale(1);
+  transition: all .3s ease;
+}
+
 .custom-input.ant-input, .custom-input, .custom-input input {
   border: none;
   border-bottom: 1px solid #fff;
   background-color: transparent !important;
   color: #fff !important;
   font-weight: bold;
+}
+
+.custom-input .ant-select-selector, .custom-form .ant-select-selection-search-input, .custom-form .anticon {
+  background-color: transparent !important;
+  color: #fff !important;
 }
 
 .custom-form label, .custom-form .ant-form-item-label {
@@ -37,16 +52,19 @@ body {
 }
 
 
+
 .custom-dropdown {
   padding: 0px;
 }
 
 .custom-dropdown .ant-select-item {
-  background-color: #7e96b8;
+  background-color: #0e131d;
+  border-bottom: 1.5px solid rgb(255, 255, 255, 0.1);
 }
 
 .custom-dropdown .ant-select-item-option-content {
   color: #fff;
+  font-size: 16px;
 }
 
 .ticket-form label , .ticket-form .ant-form-item-label {

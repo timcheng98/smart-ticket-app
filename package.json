@@ -1,8 +1,8 @@
 {
-  "name": "eth-marketplace",
+  "name": "eth-smart-ticket-app",
   "version": "0.1.0",
-  "description": "An Ethereum Marketplace",
-  "author": "gregory@dappuniversity.com",
+  "description": "An Ethereum Smart Ticket Application",
+  "author": "timcheng@smart-ticket.com",
   "dependencies": {
     "@openzeppelin/contracts": "^2.3.0",
     "antd": "^4.9.2",
