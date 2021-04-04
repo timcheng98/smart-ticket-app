@@ -243,8 +243,12 @@ const EventItem = ({ event, padding }) => {
 			hoverable
 			bodyStyle={{ padding: padding || 0 }}
 			cover={
+			
 				<div style={{ width: '100%', height: '100%', overflow: 'hidden', borderTopRightRadius: 15, borderTopLeftRadius: 15 }}>
-					<img
+				<Link to={{
+					pathname: '/event',
+					state: { event }
+				}}>		<img
 						style={{
 							width: '100%',
 							height: '100%',
@@ -257,6 +261,7 @@ const EventItem = ({ event, padding }) => {
 						src={event.thumbnail}
 						className="event-thumbnail"
 					/>
+					</Link>
 					<div style={{ position: 'absolute', top: 15, right: 15 }}>
 						<Button
 							style={{ marginRight: 12 }}
@@ -359,7 +364,7 @@ const EventItem = ({ event, padding }) => {
 							state: { event }
 						}}>
 							<Button
-								disabled={daysLeft === ''}
+								// disabled={daysLeft === ''}
 								size="large"
 								style={{
 									borderRadius: 4,

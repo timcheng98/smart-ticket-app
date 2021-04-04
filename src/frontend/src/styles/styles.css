@@ -185,6 +185,21 @@ body {
   transform: scale(0.5);
 }
 
+.custom-picker {
+  border: none !important;
+  border-bottom: 1px solid #fff !important;
+}
+
+.custom-picker input {
+  color: #fff !important;
+  font-weight: bold;
+}
+
+.form-item-image .ant-form-item-control {
+  flex: auto !important;
+  display: block !important;
+}
+
 .ticket-col {
   color: #ffffff;
   background-color: #24a0ed;

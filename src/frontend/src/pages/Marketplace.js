@@ -293,6 +293,13 @@ const Marketplace = () => {
                   })}
                 </Select>
               </Form.Item>
+              <Form.Item
+                label="Receiving Account - Credit Card Number"
+                name="credit_card_account"
+                initialValue={user.credit_card_number}
+              >
+                <Input disabled size="large" style={{backgroundColor: 'transparent', color: '#fff'}} placeholder="Credit Card Account Number" />
+              </Form.Item>
             </Form>
           </Col>
         </Row>
