@@ -295,13 +295,43 @@ const EventForm = ({ tickets, event }) => {
 					selectedTickets={selectedTickets}
 					ticketAreaArr={item}
 					price={price}
-					// type={1}
+				// type={1}
 				/>
 			);
 		});
 
 		setTicketAreaOption(areaOptions);
 	};
+
+	const selectTicket = async () => {
+		if (user.user_id <= 0)
+			return message.warning('Please Login First');
+		if (user.wallet_address === '') {
+			return message.warning('invalid address');
+		}
+		setLoading(true);
+		let tickets = await Service.call('post', '/api/sc/event/ticket/onsell', {
+			selectedArea,
+		});
+		let totalSelectedTicket = selectedTickets[selectedArea];
+		setLoading(false);
+
+		if (_.isEmpty(tickets)) return message.warning('Sold Out!')
+
+		let result = await Service.call('post', '/api/sc/event/ticket/buy/commission', {
+			address: user.wallet_address,
+			tickets,
+			total: totalSelectedTicket,
+		});
+
+		setSeatObj({
+			total_price: tickets[0].price,
+			selectedArea,
+			commission: result.commission,
+			totalSelectedTicket
+		})
+		setStage('checkout');
+	}
 
 	const [stage, setStage] = useState('preview');
 	const [seatObj, setSeatObj] = useState({});
@@ -314,7 +344,7 @@ const EventForm = ({ tickets, event }) => {
 				justify='center'
 				layout='vertical'
 				gutter={[24, 0]}
-				// style={{ padding: 50 }}
+			// style={{ padding: 50 }}
 			>
 				<Col span={22}>
 					<Row>
@@ -403,33 +433,12 @@ const EventForm = ({ tickets, event }) => {
 								height: 50,
 								fontWeight: 'bold',
 							}}
-							onClick={async () => {
-								if (user.user_id <= 0)
-									return message.warning('Please Login First');
-								if (user.wallet_address === '') {
-									return message.warning('invalid address');
-								}
-								setLoading(true);
-										let tickets = await Service.call('post', '/api/sc/event/ticket/onsell', {
-			selectedArea,
-		});
-		let totalSelectedTicket = selectedTickets[selectedArea];
-		setLoading(false);
-
-		if (_.isEmpty(tickets)) return message.warning('Sold Out!')
-
-								setSeatObj({
-									total_price: tickets[0].price,
-									selectedArea,
-									totalSelectedTicket
-								})
-								setStage('checkout');
-							}}
+							onClick={selectTicket}
 						>
 							Checkout
 						</Button>
 						<Button
-						  loading={loading}
+							loading={loading}
 							type='text'
 							style={{
 								width: '100%',

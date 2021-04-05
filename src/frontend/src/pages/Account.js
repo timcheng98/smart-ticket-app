@@ -121,7 +121,7 @@ const Information = ({ tabKey }) => {
   const user = useSelector((state) => state.app.user);
   const [form] = Form.useForm();
   const [isKyc, setKyc] = useState(false);
-  const [useKyc, setUserKyc] = useState({})
+  const [userKyc, setUserKyc] = useState({})
 
 
   useEffect(() => {
@@ -134,18 +134,20 @@ const Information = ({ tabKey }) => {
 
   const getInitialValue = async () => {
     const user_kyc = await Service.call('get', `/api/user/kyc`);
+    console.log('user_kyc', user_kyc)
     setUserKyc(user_kyc)
   }
 
   const buttonText = () => {
     let text = 'Apply KYC';
-    if (!_.isEmpty(useKyc) && useKyc.status === 0) {
+    console.log(userKyc);
+    if (!_.isEmpty(userKyc) && userKyc.user_id > 0 && userKyc.status === 0) {
       return text = 'KYC Pending'
     }
-    if (!_.isEmpty(useKyc) && useKyc.status === 1) {
+    if (!_.isEmpty(userKyc) && userKyc.user_id > 0 && userKyc.status === 1) {
       return text = 'KYC Pass'
     }
-    if (!_.isEmpty(useKyc) && useKyc.status === -1) {
+    if (!_.isEmpty(userKyc) && userKyc.user_id > 0 && userKyc.status === -1) {
       return text = 'Re-apply KYC'
     }
 
@@ -156,7 +158,7 @@ const Information = ({ tabKey }) => {
     <>
       {!isKyc && (
         <Button
-          disabled={!_.isEmpty(useKyc) && useKyc.status >= 0}
+          disabled={!_.isEmpty(userKyc) && userKyc.status >= 0 && userKyc.user_id > 0}
           size='large'
           className='custom-button'
           style={{ marginBottom: 30 }}
@@ -518,7 +520,7 @@ const Wallet = ({ totalTickets }) => {
 const CreditCardComponent = () => {
   const [form] = Form.useForm();
   const user = useSelector(state => state.app.user)
-  
+  const dispatch = useDispatch();
   useEffect(() => {
     setCreditCard({
       expiry: user.credit_card_expiry_date,
@@ -564,6 +566,9 @@ const CreditCardComponent = () => {
       credit_card_name: _.toString(creditCard.name),
     }
     await Service.call('patch', '/api/user', obj);
+    let result = await Service.call('get', '/api/user');
+
+    dispatch(CommonActions.setUser(result))
     return message.success('Update Succesful.')
   }
 

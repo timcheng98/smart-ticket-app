@@ -97,8 +97,10 @@ body {
 
 .custom-table table {
   border: 1px solid #7e96b844;
-  border-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
 }
+
 
 .custom-table .ant-table-thead > tr > th, .custom-table .ant-table-tbody > tr > td {
   color: #fafafa;
@@ -110,8 +112,20 @@ body {
   border-color: transparent;
 }
 
+
+
+
 .custom-table tr:hover, .custom-table .ant-table-tbody > tr.ant-table-row:hover > td {
   background-color: rgba(29, 43, 88, 0.5);
+}
+
+
+.custom-table .ant-table-tbody > tr.ant-table-row:last-child > td:first-child {
+  border-bottom-left-radius: 15px;
+}
+
+.custom-table .ant-table-tbody > tr.ant-table-row:last-child > td:last-child {
+  border-bottom-right-radius: 15px;
 }
 
 .custom-table .ant-pagination-item-link, .custom-table .ant-pagination-item  {
@@ -123,8 +137,10 @@ body {
   background-color: transparent;
 }
 
+
+
 .custom-table .anticon  {
-  color: #7e96b8 !important;
+  color: #7e96b8;
   transform: translateY(-20%);
 }
 
@@ -166,7 +182,7 @@ body {
 }
 
 
-.custom-button {
+.custom-button{
   color: #fff;
   font-weight: 700;
   background-color: transparent;
@@ -174,9 +190,15 @@ body {
 }
 
 .custom-button:hover {
-  color: #0e131d;
-  background-color: #fff;
-  border-color: transparent;
+  color: #0e131d !important;
+  background-color: #fff !important;
+  border-color: transparent !important;
+}
+
+.custom-button:focus {
+  color: #fff;
+  border-color: #fff;
+  background-color: transparent;
 }
 
 .custom-font {

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Button } from 'antd';
+import { Button, Divider, Row, Col } from 'antd';
+import _ from 'lodash';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-const StripPayment = ({ seatObj, onSuccess, loading }) => {
+const StripPayment = ({ seatObj = { total_price: 0, commission: 0, selectedArea: '', totalSelectedTicket: '', seat: null }, onSuccess, loading, style = { color: '#32325d', info: '#000' } }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [completed, setCompleted] = useState(false);
@@ -45,23 +46,60 @@ const StripPayment = ({ seatObj, onSuccess, loading }) => {
   return (
     <div style={{ width: '100%' }}>
       <form onSubmit={handleSubmit} style={styles.cardForm}>
-        <h4 style={{ marginTop: '0px', color: '#1990FF', fontWeight: 'bold' }}>
-          $ {seatObj.total_price} <br />
-          Area: {seatObj.selectedArea} <br />
-          No. of Tickets: {seatObj.totalSelectedTicket}
-        </h4>
+        <p style={{color: style.info, fontWeight: 'bold'}}>Information</p>
+        {
+          seatObj.seat && (
+            <Row justify="space-between" style={{ color: style.info, fontWeight: 'bold' }}>
+              <Col>
+                Position
+            </Col>
+              <Col>{seatObj.seat}</Col>
+            </Row>
+          )}
+        <Row justify="space-between" style={{ color: style.info, fontWeight: 'bold' }}>
+          <Col>
+            Area
+          </Col>
+          <Col>{seatObj.selectedArea}</Col>
+        </Row>
+        <Divider style={{ borderTopColor: style.info, margin: '20px 0px' }} />
+        <Row justify="space-between" style={{ color: style.info, fontWeight: 'bold' }}>
+          <Col>
+            Item
+          </Col>
+          <Col>$</Col>
+        </Row>
+        <Row justify="space-between" style={{ color: style.info, fontWeight: 'bold' }}>
+          <Col>
+            Ticket x {seatObj.totalSelectedTicket}
+          </Col>
+          <Col>{seatObj.total_price * seatObj.totalSelectedTicket}</Col>
+        </Row>
+        <Row justify="space-between" style={{ color: style.info, fontWeight: 'bold' }}>
+          <Col>
+            Commission
+          </Col>
+          <Col>{seatObj.commission}</Col>
+        </Row>
+        <Divider style={{ borderTopColor: style.info, margin: '10px 0px' }} />
+        <Row gutter={[0, 24]} justify="space-between" style={{ color: style.info, fontWeight: 'bold' }}>
+          <Col>
+            Total
+          </Col>
+          <Col><span style={{textDecorationLine: 'underline', textDecorationStyle: 'double'}}>${_.round(seatObj.commission + seatObj.total_price, 2)}</span></Col>
+        </Row>
         <div style={{ marginTop: '10px' }}>
           <div style={{ color: 'grey' }}>
-          Please insert credit card information
+            Please insert credit card information
           </div>
           <div style={styles.cardContainer}>
             <CardElement
-            onChange={(e) => onChangeCardElement(e)}
+              onChange={(e) => onChangeCardElement(e)}
               options={{
                 hidePostalCode: true,
                 style: {
                   base: {
-                    color: "#32325d",
+                    color: style.color,
                     fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
                     fontSmoothing: "antialiased",
                     fontSize: "16px",
@@ -81,6 +119,7 @@ const StripPayment = ({ seatObj, onSuccess, loading }) => {
             htmlType="submit"
             size="large"
             loading={loading}
+            className="custom-button"
             disabled={!stripe || !completed}
             shape='round'
             style={{
@@ -92,9 +131,9 @@ const StripPayment = ({ seatObj, onSuccess, loading }) => {
               fontWeight: 'bold',
             }}
           >
-            付款
+            Checkout
           </Button>
-          </div>
+        </div>
       </form>
     </div>
   );
@@ -102,15 +141,15 @@ const StripPayment = ({ seatObj, onSuccess, loading }) => {
 
 
 const styles = {
-        cardContainer: {
-        border: '1px solid #999999',
+  cardContainer: {
+    border: '1px solid #999999',
     padding: '10px',
     borderRadius: '5px',
     marginTop: '5px',
     marginBottom: '10px',
   },
   cardForm: {
-        maxWidth: '400px',
+    maxWidth: '400px',
     margin: 'auto',
     // textAlign: 'center',
   }

@@ -237,7 +237,6 @@ const EventItem = ({ event, padding }) => {
 			style={{
 				borderRadius: 18,
 				borderWidth: 1,
-				// width: 350
 			}}
 			bordered
 			hoverable
@@ -258,7 +257,7 @@ const EventItem = ({ event, padding }) => {
 							height: 160,
 							borderWidth: 0,
 						}}
-						src={event.thumbnail}
+						src={!_.isEmpty(event.thumbnail) ? event.thumbnail : '../assets/image_not_found.png'}
 						className="event-thumbnail"
 					/>
 					</Link>
