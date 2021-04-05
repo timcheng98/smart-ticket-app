@@ -8,52 +8,50 @@ import _ from 'lodash';
 import Path from '../routes/Path';
 
 const RootProvider = () => {
-  const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
-  
+	const [loading, setLoading] = useState(true);
+	const dispatch = useDispatch();
 
-  useEffect(() => {
-    init();
-  }, [])
+	useEffect(() => {
+		init();
+	}, []);
 
-  const init = async () => {
-    let resp = await Service.call('get', '/api/config');
-    if (resp && resp.status > 0) {
-      dispatch(setConfig(resp));
-    } else {
-      console.error('failed to get app config');
-    }
-    resp = await Service.call('get', `/api/user`);
-    if (!resp || resp.status <= 0) { 
- 
-      dispatch(setAuth(false));
-      dispatch(setUser({ user_id: 0, is_user: false }));
-      setLoading(false);
+	const init = async () => {
+		let resp = await Service.call('get', '/api/config');
+		if (resp && resp.status > 0) {
+			dispatch(setConfig(resp));
+		} else {
+			console.error('failed to get app config');
+		}
+		resp = await Service.call('get', `/api/user`);
+		if (!resp || resp.status <= 0) {
+			dispatch(setAuth(false));
+			dispatch(setUser({ user_id: 0, is_user: false }));
+			setLoading(false);
 
-      return;
-    }
-    if (resp) {
-      dispatch(setAuth(true));
-      dispatch(setUser(resp));
-      setLoading(false);
-      return;
-    }
-  }
- 
-  if (loading) {
-    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-    return (
-      <div style={{position: 'absolute', top: '50%', left: '50%'}}>
-        <Spin indicator={antIcon} />
-      </div>
-    );
-  }
+			return;
+		}
+		if (resp) {
+			dispatch(setAuth(true));
+			dispatch(setUser(resp));
+			setLoading(false);
+			return;
+		}
+	};
 
-  return (
-    <>
-      <Path />
-    </>
-  );
-}
+	if (loading) {
+		const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+		return (
+			<div style={{ position: 'absolute', top: '50%', left: '50%' }}>
+				<Spin indicator={antIcon} />
+			</div>
+		);
+	}
+
+	return (
+		<>
+			<Path />
+		</>
+	);
+};
 
 export default RootProvider;

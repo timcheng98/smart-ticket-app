@@ -13,16 +13,15 @@ import {
 	SearchOutlined,
 	FacebookFilled,
 	WhatsAppOutlined,
-	InstagramFilled
+	InstagramFilled,
 } from '@ant-design/icons';
-import * as Service from '../core/Service'
+import * as Service from '../core/Service';
 import { EventAPI } from '../api/smart-contract/event';
 import AppLayout from '../components/AppLayout';
 import Content from '../components/Content';
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const settings = {
 	className: 'slider variable-width',
@@ -43,8 +42,8 @@ const settings = {
 				slidesToShow: 1,
 				slidesToScroll: 1,
 				infinite: false,
-				dots: false
-			}
+				dots: false,
+			},
 		},
 		{
 			breakpoint: 800,
@@ -55,7 +54,7 @@ const settings = {
 				dots: false,
 				infinite: true,
 				// arrows: false,
-			}
+			},
 		},
 		{
 			breakpoint: 480,
@@ -63,10 +62,10 @@ const settings = {
 				slidesToShow: 1,
 				slidesToScroll: 1,
 				dots: false,
-				infinite: true
-			}
-		}
-	]
+				infinite: true,
+			},
+		},
+	],
 };
 
 const bannerSettings = {
@@ -88,8 +87,8 @@ const bannerSettings = {
 				slidesToShow: 1,
 				slidesToScroll: 1,
 				infinite: false,
-				dots: false
-			}
+				dots: false,
+			},
 		},
 		{
 			breakpoint: 800,
@@ -99,17 +98,17 @@ const bannerSettings = {
 				initialSlide: 1,
 				dots: true,
 				// arrows: false,
-			}
+			},
 		},
 		{
 			breakpoint: 480,
 			settings: {
 				slidesToShow: 1,
 				slidesToScroll: 1,
-				dots: false
-			}
-		}
-	]
+				dots: false,
+			},
+		},
+	],
 };
 
 const EventList = () => {
@@ -122,20 +121,20 @@ const EventList = () => {
 	const getInitialData = async () => {
 		let events = await Service.call('get', '/api/sc/event');
 		setEvents(events);
-	}
+	};
 
 	return (
 		<AppLayout>
 			<Content fullWidth>
 				<Row style={{ marginTop: 30 }}>
-					<Col span={24}><Banner events={events} /></Col>
+					<Col span={24}>
+						<Banner events={events} />
+					</Col>
 				</Row>
 			</Content>
 			<Content>
 				<Row justify='center'>
-					<Col span={24}>
-
-					</Col>
+					<Col span={24}></Col>
 					<Col xs={20} sm={20} md={12} lg={12} style={{ margin: -40 }}>
 						<Input
 							placeholder='Search Events...'
@@ -144,8 +143,13 @@ const EventList = () => {
 									style={{ fontSize: 28, paddingRight: 10, color: '#0e131d' }}
 								/>
 							}
-							size="large"
-							style={{ height: 60, fontSize: 46, borderRadius: 30, paddingLeft: 30 }}
+							size='large'
+							style={{
+								height: 60,
+								fontSize: 46,
+								borderRadius: 30,
+								paddingLeft: 30,
+							}}
 						/>
 					</Col>
 				</Row>
@@ -162,7 +166,7 @@ const EventList = () => {
 						style={{ fontSize: 32, fontWeight: 'bold', color: '#fff' }}
 					>
 						Events
-				</Col>
+					</Col>
 					<Col
 						xs={22}
 						sm={22}
@@ -202,23 +206,35 @@ const Banner = ({ events }) => {
 		let banners = [];
 		let eventsMap = _.map(events, 'banner_1');
 		_.map(eventsMap, (src) => {
-			banners.push((
+			banners.push(
 				<div style={{ margin: 0, padding: 0 }}>
-
-					<div style={{ position: 'relative', backgroundImage: `url('${src}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', margin: 0, paddingBottom: 400, width: '100%' }} ></div>
+					<div
+						style={{
+							position: 'relative',
+							backgroundImage: `url('${src}')`,
+							backgroundSize: 'cover',
+							backgroundRepeat: 'no-repeat',
+							margin: 0,
+							paddingBottom: 400,
+							width: '100%',
+						}}
+					></div>
 					{/* <img
 							style={{ width: '100%', height: '100%', objectFit: 'cover', height: 400 }}
 							src={src}
 						/> */}
 				</div>
-			))
+			);
 		});
-		setBanners(banners)
-	}
+		setBanners(banners);
+	};
 
 	return (
 		// <div style={{ margin: 0, height: 400, width: '100%' }}>
-		<Slider {...bannerSettings} style={{ margin: 0, padding: 0, width: '100%' }}>
+		<Slider
+			{...bannerSettings}
+			style={{ margin: 0, padding: 0, width: '100%' }}
+		>
 			{banners}
 		</Slider>
 		// </div>
@@ -226,7 +242,6 @@ const Banner = ({ events }) => {
 };
 
 const EventItem = ({ event, padding }) => {
-
 	let daysLeft = '';
 	if (event.close_date > moment().unix()) {
 		daysLeft = `${moment.unix(event.close_date).fromNow()} Left`;
@@ -242,24 +257,38 @@ const EventItem = ({ event, padding }) => {
 			hoverable
 			bodyStyle={{ padding: padding || 0 }}
 			cover={
-			
-				<div style={{ width: '100%', height: '100%', overflow: 'hidden', borderTopRightRadius: 15, borderTopLeftRadius: 15 }}>
-				<Link to={{
-					pathname: '/event',
-					state: { event }
-				}}>		<img
-						style={{
-							width: '100%',
-							height: '100%',
-							objectFit: 'cover',
-							borderTopRightRadius: 15,
-							borderTopLeftRadius: 15,
-							height: 160,
-							borderWidth: 0,
+				<div
+					style={{
+						width: '100%',
+						height: '100%',
+						overflow: 'hidden',
+						borderTopRightRadius: 15,
+						borderTopLeftRadius: 15,
+					}}
+				>
+					<Link
+						to={{
+							pathname: '/event',
+							state: { event },
 						}}
-						src={!_.isEmpty(event.thumbnail) ? event.thumbnail : '../assets/image_not_found.png'}
-						className="event-thumbnail"
-					/>
+					>
+						<img
+							style={{
+								width: '100%',
+								height: '100%',
+								objectFit: 'cover',
+								borderTopRightRadius: 15,
+								borderTopLeftRadius: 15,
+								height: 160,
+								borderWidth: 0,
+							}}
+							src={
+								!_.isEmpty(event.thumbnail)
+									? event.thumbnail
+									: '../assets/image_not_found.png'
+							}
+							className='event-thumbnail'
+						/>
 					</Link>
 					<div style={{ position: 'absolute', top: 15, right: 15 }}>
 						<Button
@@ -273,7 +302,7 @@ const EventItem = ({ event, padding }) => {
 							}
 						/>
 						<Popover
-							content={(
+							content={
 								<Row gutter={[16, 0]}>
 									<Col>
 										<WhatsAppOutlined
@@ -290,7 +319,7 @@ const EventItem = ({ event, padding }) => {
 											style={{ color: '#108ee9', fontSize: 24 }}
 										/>
 									</Col>
-								</Row>)
+								</Row>
 							}
 						>
 							<Button
@@ -298,7 +327,10 @@ const EventItem = ({ event, padding }) => {
 								size='small'
 								icon={
 									<ShareAltOutlined
-										style={{ color: '#0e131d', transform: 'translate(0, -15%)' }}
+										style={{
+											color: '#0e131d',
+											transform: 'translate(0, -15%)',
+										}}
 									/>
 								}
 							/>
@@ -342,7 +374,7 @@ const EventItem = ({ event, padding }) => {
 								>
 									#{value.toUpperCase()}
 								</Button>
-							)
+							);
 						})}
 					</Col>
 				</Row>
@@ -358,13 +390,15 @@ const EventItem = ({ event, padding }) => {
 				</Row>
 				<Row justify='center'>
 					<Col span={24}>
-						<Link to={{
-							pathname: '/event',
-							state: { event }
-						}}>
+						<Link
+							to={{
+								pathname: '/event',
+								state: { event },
+							}}
+						>
 							<Button
 								// disabled={daysLeft === ''}
-								size="large"
+								size='large'
 								style={{
 									borderRadius: 4,
 									fontWeight: 'bold',
@@ -378,7 +412,7 @@ const EventItem = ({ event, padding }) => {
 							</Button>
 						</Link>
 					</Col>
-					{daysLeft !== '' &&
+					{daysLeft !== '' && (
 						<Col style={{ textAlign: 'center', marginTop: 8 }}>
 							<span
 								style={{
@@ -393,7 +427,7 @@ const EventItem = ({ event, padding }) => {
 								{daysLeft}
 							</span>
 						</Col>
-					}
+					)}
 				</Row>
 			</Col>
 		</Card>
@@ -404,18 +438,17 @@ export const Events = ({ events }) => {
 	const EventList = () => {
 		let eventItem = [];
 		_.each(events, (item) => {
-			eventItem.push((
+			eventItem.push(
 				<Col xs={24} sm={24} md={8} lg={8} xl={8}>
 					<EventItem event={item} padding={20} />
-				</Col>))
-		})
+				</Col>
+			);
+		});
 		return eventItem;
 	};
 
 	return (
-		<Row gutter={[{ xs: 0, sm: 0, md: 24, lg: 24 }, 48]}>
-			{EventList()}
-		</Row>
+		<Row gutter={[{ xs: 0, sm: 0, md: 24, lg: 24 }, 48]}>{EventList()}</Row>
 	);
 };
 
@@ -423,20 +456,19 @@ export const EventsWithSlider = ({ event }) => {
 	const [eventArr, setEventArr] = useState({});
 
 	useEffect(() => {
-		getInitialData()
+		getInitialData();
 	}, []);
 
 	const getInitialData = async () => {
 		let events = await Service.call('get', '/api/sc/event');
-		setEventArr(events)
-	}
-
+		setEventArr(events);
+	};
 
 	const EventList = () => {
 		let eventItem = [];
 		_.each(eventArr, (item, key) => {
 			// if (event.eventId === item.eventId) return null;
-			eventItem.push((
+			eventItem.push(
 				<div
 					style={{
 						position: 'relative',
@@ -447,11 +479,10 @@ export const EventsWithSlider = ({ event }) => {
 				>
 					<EventItem event={item} padding={20} />
 				</div>
-			))
-		})
+			);
+		});
 		return eventItem;
 	};
-
 
 	return (
 		<Slider {...settings} style={{ margin: 0, width: '100%' }}>

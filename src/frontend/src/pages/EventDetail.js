@@ -295,7 +295,7 @@ const EventForm = ({ tickets, event }) => {
 					selectedTickets={selectedTickets}
 					ticketAreaArr={item}
 					price={price}
-				// type={1}
+					// type={1}
 				/>
 			);
 		});
@@ -304,8 +304,7 @@ const EventForm = ({ tickets, event }) => {
 	};
 
 	const selectTicket = async () => {
-		if (user.user_id <= 0)
-			return message.warning('Please Login First');
+		if (user.user_id <= 0) return message.warning('Please Login First');
 		if (user.wallet_address === '') {
 			return message.warning('invalid address');
 		}
@@ -316,22 +315,26 @@ const EventForm = ({ tickets, event }) => {
 		let totalSelectedTicket = selectedTickets[selectedArea];
 		setLoading(false);
 
-		if (_.isEmpty(tickets)) return message.warning('Sold Out!')
+		if (_.isEmpty(tickets)) return message.warning('Sold Out!');
 
-		let result = await Service.call('post', '/api/sc/event/ticket/buy/commission', {
-			address: user.wallet_address,
-			tickets,
-			total: totalSelectedTicket,
-		});
+		let result = await Service.call(
+			'post',
+			'/api/sc/event/ticket/buy/commission',
+			{
+				address: user.wallet_address,
+				tickets,
+				total: totalSelectedTicket,
+			}
+		);
 
 		setSeatObj({
 			total_price: tickets[0].price,
 			selectedArea,
 			commission: result.commission,
-			totalSelectedTicket
-		})
+			totalSelectedTicket,
+		});
 		setStage('checkout');
-	}
+	};
 
 	const [stage, setStage] = useState('preview');
 	const [seatObj, setSeatObj] = useState({});
@@ -344,7 +347,7 @@ const EventForm = ({ tickets, event }) => {
 				justify='center'
 				layout='vertical'
 				gutter={[24, 0]}
-			// style={{ padding: 50 }}
+				// style={{ padding: 50 }}
 			>
 				<Col span={22}>
 					<Row>
@@ -471,7 +474,7 @@ const EventForm = ({ tickets, event }) => {
 		setLoading(false);
 
 		message.success('Checkout Successfully.');
-		history.push('/account?tab=wallet')
+		history.push('/account?tab=wallet');
 	};
 
 	if (stage === 'checkout') {
@@ -484,7 +487,11 @@ const EventForm = ({ tickets, event }) => {
 				style={{ marginTop: 10 }}
 			>
 				<Col span={24} style={{ width: 500 }}>
-					<StripePayment loading={loading} seatObj={seatObj} onSuccess={onSuccess} />
+					<StripePayment
+						loading={loading}
+						seatObj={seatObj}
+						onSuccess={onSuccess}
+					/>
 				</Col>
 			</Row>
 		);
