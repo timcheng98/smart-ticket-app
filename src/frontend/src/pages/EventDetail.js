@@ -417,7 +417,8 @@ const EventForm = ({ tickets, event }) => {
 					align='bottom'
 					layout='vertical'
 					gutter={[24, 12]}
-					style={{ marginTop: 10 }}
+					style={{ marginTop: 10, width: 600 }}
+					// style={{ width: 500 }}
 				>
 					<Col span={22} style={{ fontWeight: 'bold' }}>
 						Select Ticket
@@ -430,7 +431,7 @@ const EventForm = ({ tickets, event }) => {
 							shape='round'
 							style={{
 								marginTop: 20,
-								width: '100%',
+								width: '80%',
 								background: 'linear-gradient(90deg,#0e131d,#060a10 90.65%)',
 								color: '#fff',
 								height: 50,
@@ -444,7 +445,7 @@ const EventForm = ({ tickets, event }) => {
 							loading={loading}
 							type='text'
 							style={{
-								width: '100%',
+								width: '80%',
 								fontSize: 12,
 								color: '#9a9a9a',
 								padding: 0,

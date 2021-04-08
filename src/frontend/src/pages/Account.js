@@ -44,6 +44,11 @@ const Account = () => {
 	const history = useHistory();
 	const [tabKey, setTabKey] = useState('');
 
+	useEffect(() => {
+		setTabKey(history.location.search.split('=')[1])
+		console.log('history', history.location.search.split('=')[1]);
+	}, [history])
+
 	const logout = async () => {
 		await Service.call('post', '/api/user/logout');
 		dispatch(CommonActions.setAuth(false));
@@ -63,15 +68,16 @@ const Account = () => {
 						onTabClick={(key) => setTabKey(key)}
 						tabPosition='left'
 						size='large'
+						activeKey={tabKey}
 						tabBarStyle={{ color: '#fff', fontWeight: 'bold', width: 180 }}
 					>
-						<TabPane tab='Information' key='1'>
+						<TabPane tab='Information' key='info'>
 							<Information tabKey={tabKey} />
 						</TabPane>
-						<TabPane tab='Wallet' key='2'>
+						<TabPane tab='Wallet' key='wallet'>
 							<TicketOwn tabKey={tabKey} />
 						</TabPane>
-						<TabPane tab='Credit Card' key='3'>
+						<TabPane tab='Credit Card' key='credit_card'>
 							<CreditCardComponent tabKey={tabKey} />
 						</TabPane>
 						<TabPane
@@ -91,11 +97,14 @@ const Account = () => {
 						size='large'
 						tabBarStyle={{ color: '#fff', fontWeight: 'bold', width: '100%' }}
 					>
-						<TabPane tab='Information' key='1'>
+						<TabPane tab='Information' key='info'>
 							<Information />
 						</TabPane>
-						<TabPane tab='Wallet' key='2'>
+						<TabPane tab='Wallet' key='wallet'>
 							<TicketOwn />
+						</TabPane>
+						<TabPane tab='Credit Card' key='credit_card'>
+							<CreditCardComponent tabKey={tabKey} />
 						</TabPane>
 						<TabPane
 							tab={
@@ -107,7 +116,7 @@ const Account = () => {
 									Logout
 								</Button>
 							}
-							key='3'
+							key='logout'
 						/>
 					</Tabs>
 				</Col>

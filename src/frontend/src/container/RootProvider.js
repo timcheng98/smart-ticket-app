@@ -41,8 +41,8 @@ const RootProvider = () => {
 	if (loading) {
 		const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 		return (
-			<div style={{ position: 'absolute', top: '50%', left: '50%' }}>
-				<Spin indicator={antIcon} />
+			<div style={{ display: 'relative', position: 'absolute', top: 0, right: 0,  width: '100%', height: '100%',  backgroundColor: '#0e131d' }}>
+				<Spin size="large" style={{position: 'absolute', top: '50%', left: '50%', color: '#fff',}} indicator={antIcon} />
 			</div>
 		);
 	}
