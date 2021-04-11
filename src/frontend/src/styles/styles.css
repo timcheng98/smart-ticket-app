@@ -137,7 +137,36 @@ body {
   background-color: transparent;
 }
 
+.read-only .ql-editor {
+  resize: none;
+}
 
+.read-only span, .read-only p, .read-only h1 {
+  color: #fff !important;
+  font-family: Roboto, Microsoft JhengHei, serif;
+  font-size: 16px;
+}
+
+.read-only img {
+  object-fit: contain;
+  width: 80%;
+  padding: 20px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.read-only img:hover, .slick-active img:hover {
+  transform: scale(1.05) !important;
+  transition: all .3s ease;
+}
+
+.read-only img:not(:hover ), .slick-active img:not(:hover ){
+  transform: scale(1) !important;
+  transition: all .3s ease;
+}
 
 .custom-table .anticon  {
   color: #7e96b8;

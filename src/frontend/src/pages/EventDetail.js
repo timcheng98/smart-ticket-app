@@ -26,6 +26,9 @@ import {
 import StripePayment from '../components/StripePayment';
 import * as Service from '../core/Service';
 import { EventsWithSlider } from './EventList';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
 
 import Content from '../components/Content';
 import AppLayout from '../components/AppLayout';
@@ -35,7 +38,7 @@ const { Title, Text } = Typography;
 const { Option } = Select;
 
 const bannerSettings = {
-	// className: 'slider variable-width',
+	className: 'slider variable-width',
 	// centerMode: true,
 	dots: false,
 	infinite: true,
@@ -311,6 +314,8 @@ const EventForm = ({ tickets, event }) => {
 		setLoading(true);
 		let tickets = await Service.call('post', '/api/sc/event/ticket/onsell', {
 			selectedArea,
+			totalSelectedTicket: selectedTickets[selectedArea],
+			eventId: location.state.event.eventId
 		});
 		let totalSelectedTicket = selectedTickets[selectedArea];
 		setLoading(false);
@@ -326,7 +331,8 @@ const EventForm = ({ tickets, event }) => {
 				total: totalSelectedTicket,
 			}
 		);
-
+		// let sell_tickets = _.slice(tickets, 0, totalSelectedTicket);
+		// console.log('sell_tickets', sell_tickets);
 		setSeatObj({
 			total_price: tickets[0].price,
 			selectedArea,
@@ -465,13 +471,18 @@ const EventForm = ({ tickets, event }) => {
 		setLoading(true);
 		let tickets = await Service.call('post', '/api/sc/event/ticket/onsell', {
 			selectedArea,
+			totalSelectedTicket: selectedTickets[selectedArea],
+			eventId: location.state.event.eventId
 		});
 		let totalSelectedTicket = selectedTickets[selectedArea];
 		let result = await Service.call('post', '/api/sc/event/ticket/buy', {
 			address: user.wallet_address,
 			tickets,
 			total: totalSelectedTicket,
+			commission: seatObj.commission,
+			card: payload,
 		});
+
 		setLoading(false);
 
 		message.success('Checkout Successfully.');
@@ -493,6 +504,22 @@ const EventForm = ({ tickets, event }) => {
 						seatObj={seatObj}
 						onSuccess={onSuccess}
 					/>
+					<Button
+						loading={loading}
+						type='text'
+						style={{
+							width: '100%',
+							fontSize: 12,
+							color: '#9a9a9a',
+							padding: 0,
+						}}
+						onClick={() => {
+							setStage('buying');
+							setSeatObj({});
+						}}
+					>
+						Back
+					</Button>
 				</Col>
 			</Row>
 		);
@@ -526,7 +553,14 @@ const Detail = ({ event }) => {
 						</Title>
 					</Col>
 					<Col xs={24} sm={24} md={24} lg={20}>
-						<pre style={{ color: '#fff' }}>{event.long_desc}</pre>
+						<ReactQuill 
+						theme={["bubble"]}
+						value={event.long_desc} 
+						readOnly 
+						className="read-only"
+						/>
+
+						<div style={{ color: '#fff' }}></div>
 					</Col>
 				</Row>
 				<Row gutter={[24, 12]} style={{ color: '#fff', marginTop: 30 }}>

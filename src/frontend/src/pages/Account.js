@@ -140,6 +140,10 @@ const Information = ({ tabKey }) => {
 		getInitialValue();
 	}, []);
 
+	useEffect(() => {
+		getInitialValue();
+	}, [isKyc]);
+
 	const getInitialValue = async () => {
 		const user_kyc = await Service.call('get', `/api/user/kyc`);
 		console.log('user_kyc', user_kyc);
@@ -148,7 +152,6 @@ const Information = ({ tabKey }) => {
 
 	const buttonText = () => {
 		let text = 'Apply KYC';
-		console.log(userKyc);
 		if (!_.isEmpty(userKyc) && userKyc.user_id > 0 && userKyc.status === 0) {
 			return (text = 'KYC Pending');
 		}
@@ -165,6 +168,7 @@ const Information = ({ tabKey }) => {
 	return (
 		<>
 			{!isKyc && (
+				<>
 				<Button
 					disabled={
 						!_.isEmpty(userKyc) && userKyc.status >= 0 && userKyc.user_id > 0
@@ -175,8 +179,19 @@ const Information = ({ tabKey }) => {
 					onClick={() => setKyc(true)}
 				>
 					{buttonText()}
+
 				</Button>
+									{!_.isEmpty(userKyc) && userKyc.user_id > 0  && userKyc.status === -1 && <h4 style={{color: 'red'}}>
+										Reject Reason <br />
+										{userKyc.reject_reason}
+									</h4>}
+									</>
+
 			)}
+			{/* {!_.isEmpty(userKyc) && userKyc.user_id > 0 && userKyc.status === -1 (
+				<p>123</p>
+			)} */}
+
 			{isKyc ? <KYCComponent setKyc={setKyc} /> : <UserInformationCompoent />}
 		</>
 	);
@@ -198,10 +213,11 @@ const UserInformationCompoent = () => {
 
 	const getInitialValue = async () => {
 		const user_kyc = await Service.call('get', `/api/user/kyc`);
+		console.log(user_kyc.birthday);
 		form.setFieldsValue({
 			...user,
 			...user_kyc,
-			birthday: moment.unix(user_kyc.birthday),
+			birthday: !_.isEmpty(user_kyc) && user_kyc.birthday !== 0 ? moment.unix(user_kyc.birthday) : undefined,
 			user_kyc_id:
 				user.user_kyc_id > 0 && !_.isEmpty(user_kyc) && user_kyc.status === 1
 					? 1
@@ -211,10 +227,10 @@ const UserInformationCompoent = () => {
 		setImageURL({
 			national_doc: user_kyc.national_doc
 				? `${app.config.STATIC_SERVER_URL}/media/${user_kyc.national_doc}`
-				: '',
+				: '/image_not_found.png',
 			face_doc: user_kyc.face_doc
 				? `${app.config.STATIC_SERVER_URL}/media/${user_kyc.face_doc}`
-				: '',
+				: '/image_not_found.png',
 		});
 	};
 
@@ -365,6 +381,7 @@ const KYCComponent = ({ setKyc }) => {
 			natioanl_doc_verified: 0,
 			face_doc_verified: 0,
 			status: 0,
+			reject_reason: ''
 		};
 
 		const resp = await Service.call('post', '/api/user/kyc', postObj);
@@ -596,11 +613,11 @@ const CreditCardComponent = () => {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		setCreditCard({
-			expiry: user.credit_card_expiry_date,
-			name: user.credit_card_name,
+			expiry: _.isEmpty(user.credit_card_expiry_date) ? '' : user.credit_card_expiry_date,
+			name: _.isEmpty(user.credit_card_name) ? '' : user.credit_card_name,
 			cvc: '',
 			focus: '',
-			number: user.credit_card_number,
+			number: _.isEmpty(user.credit_card_number) ? '' : user.credit_card_number,
 		});
 	}, [user]);
 
@@ -931,7 +948,7 @@ const EventList = ({ events }) => {
 const Event = ({ detail }) => {
 	let { event, ticket_own } = detail;
 	return (
-		<Row align='middle' tyle={{ backgroundColor: '#fff', height: 100 }}>
+		<Row align='middle' tyle={{ backgroundColor: 'red', height: 100 }}>
 			<Col span={5}>
 				<span
 					style={{
@@ -947,7 +964,7 @@ const Event = ({ detail }) => {
 				></span>
 
 				<Row align='middle'>
-					<Col span={24} style={{ marginLeft: 15 }}>
+					<Col span={24} style={{ marginLeft: 30 }}>
 						<img
 							style={{
 								height: 50,
@@ -955,7 +972,7 @@ const Event = ({ detail }) => {
 								objectFit: 'cover',
 								borderRadius: 50,
 							}}
-							src={event.approval_doc || ''}
+							src={event.thumbnail}
 						/>
 					</Col>
 				</Row>

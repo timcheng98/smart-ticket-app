@@ -110,7 +110,7 @@ const StripPayment = ({
 								textDecorationStyle: 'double',
 							}}
 						>
-							${_.round(seatObj.commission + seatObj.total_price, 2)}
+							${_.round(seatObj.commission + seatObj.total_price * seatObj.totalSelectedTicket, 2)}
 						</span>
 					</Col>
 				</Row>
