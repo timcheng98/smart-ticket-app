@@ -14,7 +14,7 @@ import {
 } from 'antd';
 import Slider from 'react-slick';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory, Link } from 'react-router-dom';
 import _ from 'lodash';
 import moment from 'moment';
 import {
@@ -22,6 +22,7 @@ import {
 	AimOutlined,
 	PlusOutlined,
 	MinusOutlined,
+	CheckCircleOutlined
 } from '@ant-design/icons';
 import StripePayment from '../components/StripePayment';
 import * as Service from '../core/Service';
@@ -261,9 +262,9 @@ const EventForm = ({ tickets, event }) => {
 	}, []);
 
 	const setTicket = async () => {
-		let tickets = await Service.call('get', '/api/sc/event/ticket');
+		let tickets = await Service.callBlockchain('get', '/api/sc/event/ticket');
 		tickets = tickets[location.state.event.eventId];
-		let events = await Service.call('get', '/api/sc/event');
+		let events = await Service.callBlockchain('get', '/api/sc/event');
 		let ticketGroupPrice = _.groupBy(tickets, 'price');
 		let ticketsMapPrice = {};
 		_.each(ticketGroupPrice, (item, key) => {
@@ -277,6 +278,7 @@ const EventForm = ({ tickets, event }) => {
 		setTicketAreaArr(ticketsMapPrice);
 		setTicketAreaOptionLoading(false);
 		setEventArr(events);
+		console.log('events', events);
 	};
 
 	const [ticketAreaOption, setTicketAreaOption] = useState(null);
@@ -312,7 +314,8 @@ const EventForm = ({ tickets, event }) => {
 			return message.warning('invalid address');
 		}
 		setLoading(true);
-		let tickets = await Service.call('post', '/api/sc/event/ticket/onsell', {
+		let tickets = await Service.callBlockchain('post', '/api/sc/event/ticket/onsell', {
+			user_id: user.user_id,
 			selectedArea,
 			totalSelectedTicket: selectedTickets[selectedArea],
 			eventId: location.state.event.eventId
@@ -322,10 +325,11 @@ const EventForm = ({ tickets, event }) => {
 
 		if (_.isEmpty(tickets)) return message.warning('Sold Out!');
 
-		let result = await Service.call(
+		let result = await Service.callBlockchain(
 			'post',
 			'/api/sc/event/ticket/buy/commission',
 			{
+				user_id: user.user_id,
 				address: user.wallet_address,
 				tickets,
 				total: totalSelectedTicket,
@@ -469,13 +473,15 @@ const EventForm = ({ tickets, event }) => {
 	const onSuccess = async (payload) => {
 		console.log('payload', payload);
 		setLoading(true);
-		let tickets = await Service.call('post', '/api/sc/event/ticket/onsell', {
+		let tickets = await Service.callBlockchain('post', '/api/sc/event/ticket/onsell', {
+			user_id: user.user_id,
 			selectedArea,
 			totalSelectedTicket: selectedTickets[selectedArea],
 			eventId: location.state.event.eventId
 		});
 		let totalSelectedTicket = selectedTickets[selectedArea];
-		let result = await Service.call('post', '/api/sc/event/ticket/buy', {
+		let result = await Service.callBlockchain('post', '/api/sc/event/ticket/buy', {
+			user_id: user.user_id,
 			address: user.wallet_address,
 			tickets,
 			total: totalSelectedTicket,
@@ -538,7 +544,7 @@ const Detail = ({ event }) => {
 	return (
 		<Row gutter={[0, 0]} style={{ color: '#fff', marginTop: 50 }}>
 			<Col xs={24} sm={24} md={24} lg={16}>
-				<Row gutter={[24, 24]}>
+				<Row gutter={[24, 24]} >
 					<Col xs={24} sm={24} md={24} lg={20}>
 						<Title level={1} style={{ color: '#fff' }}>
 							{event.name}
@@ -546,6 +552,12 @@ const Detail = ({ event }) => {
 						<Divider
 							style={{ borderColor: '#fff', borderWidth: 4, borderRadius: 8 }}
 						/>
+						<Text style={{ color: '#fff', textDecoration: 'underline', fontSize: 16}}>Organization: 
+						<Link to="/company/verify">
+						<span style={{color: '#fff', marginLeft: 4}}>{event.company.name}</span>
+						</Link>
+						</Text>
+						<CheckCircleOutlined style={{ color: '#87d068', fontSize: 20, marginLeft: 12}} />
 					</Col>
 					<Col xs={24} sm={24} md={24} lg={20}>
 						<Title level={2} style={{ color: '#fff' }}>
@@ -609,7 +621,6 @@ const Detail = ({ event }) => {
 								src={`https://maps.google.com/maps?q=${event.latitude}, ${event.longitude}&z=17&output=embed&language=zh-HK`}
 								width='100%'
 								height='400'
-								frameborder='0'
 							></iframe>
 						</div>
 					</Col>

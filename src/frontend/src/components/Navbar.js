@@ -46,7 +46,7 @@ const Navbar = (props) => {
             <Col xs={0} sm={0} md={6} lg={5} xl={4}>
               <Logo />
             </Col>
-            <Col xs={0} sm={0} md={8} lg={8} xl={6}>
+            <Col xs={0} sm={0} md={16} lg={14} xl={10}>
               <Row justify="space-between" style={{ color: "#fff" }}>
                 <Link to="/events">
                   <Col
@@ -79,6 +79,28 @@ const Navbar = (props) => {
                     }}
                   >
                     Marketplace
+                  </Col>
+                </Link>
+                <Link to="/transaction">
+                  <Col
+                    style={{
+                      color: "#7e96b8",
+                      fontWeight: "500",
+                      fontSize: 16,
+                    }}
+                  >
+                    Transaction
+                  </Col>
+                </Link>
+                <Link to="/company/verify">
+                  <Col
+                    style={{
+                      color: "#7e96b8",
+                      fontWeight: "500",
+                      fontSize: 16,
+                    }}
+                  >
+                    Company Info.
                   </Col>
                 </Link>
               </Row>

@@ -119,7 +119,7 @@ const EventList = () => {
 	}, []);
 
 	const getInitialData = async () => {
-		let events = await Service.call('get', '/api/sc/event');
+		let events = await Service.callBlockchain('get', '/api/sc/event');
 		setEvents(events);
 	};
 
@@ -241,7 +241,7 @@ const Banner = ({ events }) => {
 	);
 };
 
-const EventItem = ({ event, padding }) => {
+const EventItem = ({ event, padding, margin = 0 }) => {
 	let daysLeft = '';
 	if (event.close_date > moment().unix()) {
 		daysLeft = `${moment.unix(event.close_date).fromNow()} Left`;
@@ -252,6 +252,8 @@ const EventItem = ({ event, padding }) => {
 			style={{
 				borderRadius: 18,
 				borderWidth: 1,
+				height: 400,
+				margin: margin
 			}}
 			bordered
 			hoverable
@@ -350,7 +352,7 @@ const EventItem = ({ event, padding }) => {
 		>
 			<Col span={24} style={{ padding: 0 }}>
 				<Row gutter={[24, 10]}>
-					<Col span={24} style={{ fontWeight: 'bold', fontSize: 16 }}>
+					<Col span={24} style={{ fontWeight: 'bold', fontSize: 16, height: 60 }}>
 						{event.name}
 					</Col>
 				</Row>
@@ -460,7 +462,7 @@ export const EventsWithSlider = ({ event }) => {
 	}, []);
 
 	const getInitialData = async () => {
-		let events = await Service.call('get', '/api/sc/event');
+		let events = await Service.callBlockchain('get', '/api/sc/event');
 		setEventArr(events);
 	};
 
@@ -474,10 +476,11 @@ export const EventsWithSlider = ({ event }) => {
 						position: 'relative',
 						width: 350,
 						margin: 0,
+						// padding: 20,
 						maxWidth: '80vw',
 					}}
 				>
-					<EventItem event={item} padding={20} />
+					<EventItem event={item} padding={20} margin={10} />
 				</div>
 			);
 		});

@@ -521,7 +521,7 @@ const TicketOwn = () => {
 	}, []);
 
 	const getOwnerTicket = async () => {
-		let tickets = await Service.call('post', '/api/sc/event/ticket/owner', {
+		let tickets = await Service.callBlockchain('post', '/api/sc/event/ticket/owner', {
 			address: user.wallet_address,
 		});
 

@@ -64,8 +64,8 @@ const Marketplace = () => {
 
   const getTickets = async () => {
     setinitLoading(true);
-    let tickets = await Service.call('get', '/api/sc/event/ticket/marketplace');
-    let events = await Service.call('get', '/api/sc/event');
+    let tickets = await Service.callBlockchain('get', '/api/sc/event/ticket/marketplace');
+    let events = await Service.callBlockchain('get', '/api/sc/event');
     setEventArr(_.keyBy(events, 'eventId'));
     console.log('tickets', tickets);
     setMarketplaceTickets(_.keyBy(tickets, 'ticketId'));
@@ -124,10 +124,11 @@ const Marketplace = () => {
     if (ticketId === -1) return message.warning('ticket not found');
     if (user.user_wallet === '') return message.warning('wallet not found');
 
-    let result = await Service.call(
+    let result = await Service.callBlockchain(
       'post',
       '/api/sc/event/ticket/marketplace/sell',
       {
+        user_id: user.user_id,
         seller: user.wallet_address,
         ticketId,
       }
@@ -140,14 +141,19 @@ const Marketplace = () => {
     await getTickets();
   };
 
-  const buyTicket = async () => {
+  const buyTicket = async (payload) => {
     setLoading(true);
     if (user.user_id <= 0) return message.warning('Please Login First.');
-    let result = await Service.call(
+    let result = await Service.callBlockchain(
       'post',
       '/api/sc/event/ticket/marketplace/buy',
       {
+        user_id: user.user_id,
         buyer: user.wallet_address,
+        amount: selectedTicket.price,
+        event_id: selectedTicket.event_id,
+        card: payload,
+        commission,
         ticketId: selectedTicket.ticketId,
       }
     );
@@ -161,10 +167,11 @@ const Marketplace = () => {
   const getTicketCommission = async () => {
     if (user.user_id <= 0) return message.warning('Please Login First.');
     setLoading(true);
-    let result = await Service.call(
+    let result = await Service.callBlockchain(
       'post',
       '/api/sc/event/ticket/marketplace/buy/commission',
       {
+        user_id: user.user_id,
         buyer: user.wallet_address,
         ticketId: selectedTicket.ticketId,
       }
@@ -195,7 +202,7 @@ const Marketplace = () => {
               setSellModalVisible(true);
               sellTicketForm.setFieldsValue({ ticketId: null });
               setLoading(true);
-              let tickets = await Service.call(
+              let tickets = await Service.callBlockchain(
                 'post',
                 '/api/sc/event/ticket/owner',
                 { address: user.wallet_address }

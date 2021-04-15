@@ -5,6 +5,8 @@ import moment from 'moment';
 import { ActionCreators } from '../redux/actions';
 import { getStore } from '../redux/store/configureStore';
 
+const crypto = require('crypto');
+
 // export function getUser() {
 //   return getStore().getState().app.user;
 // }
@@ -32,4 +34,9 @@ export function mergeByKey (arr, subArr, key) {
       return item[key] === subItem[key] ? _.assign(item, subItem) : null;
     })
   })
+}
+
+export async function sha256(message) {
+  const hash = crypto.createHash('sha256').update(message).digest('hex');
+  return hash;
 }
