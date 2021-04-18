@@ -28,26 +28,26 @@ body {
 
 .custom-input.ant-input, .custom-input, .custom-input input {
   border: none;
-  border-bottom: 1px solid #fff;
+  border-bottom: 1px solid #000;
   background-color: transparent !important;
-  color: #fff !important;
+  color: #000 !important;
   font-weight: bold;
 }
 
 .custom-input .ant-select-selector, .custom-form .ant-select-selection-search-input, .custom-form .anticon {
   background-color: transparent !important;
-  color: #fff !important;
+  color: #000 !important;
 }
 
 .custom-form label, .custom-form .ant-form-item-label {
   text-align: left;
-  color: #fff;
+  color: #000;
 }
 
 
 .custom-form .ant-select-selector, .custom-form .ant-select-selection-search-input, .custom-form .anticon {
   background-color: transparent !important;
-  color: #fff !important;
+  color: #000 !important;
 
 }
 
@@ -59,53 +59,53 @@ body {
 
 .custom-dropdown .ant-select-item {
   background-color: #0e131d;
-  border-bottom: 1.5px solid rgb(255, 255, 255, 0.1);
+  border-bottom: 1.5px solid #000;
 }
 
 .custom-dropdown .ant-select-item-option-content {
-  color: #fff;
+  color: #000;
   font-size: 16px;
 }
 
 .ticket-form label , .ticket-form .ant-form-item-label {
   text-align: center;
-  color: #fff;
+  color: #000;
 }
 
 .custom-form .ant-radio-inner {
   background-color: transparent;
-  border-color: #fff;
+  border-color: #000;
 }
 
 .custom-form .ant-radio-input:focus + .ant-radio-inner {
-  border-color: #fff;
+  border-color: #000;
 }
 
 .custom-form .ant-radio-wrapper span{
-  color: #fff;
+  color: #000;
 }
 
 .custom-form .ant-radio-inner::after {
-  background-color: #fff;
-  border-color: #fff;
+  background-color: #000;
+  border-color: #000;
 }
 
 .custom-table th, .custom-table div,  .custom-table .antd-table-cell {
-  color: #fafafa;
+  color: #000;
   background-color: transparent !important ;
 }
 
 .custom-table table {
-  border: 1px solid #7e96b844;
+  border: 1px solid #000;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
 }
 
 
 .custom-table .ant-table-thead > tr > th, .custom-table .ant-table-tbody > tr > td {
-  color: #fafafa;
+  color: #000;
   text-align: center;
-  border-color: #7e96b844;
+  border-color: #000;
 }
 
 .custom-table .ant-table-tbody tr:last-child  td {
@@ -130,7 +130,7 @@ body {
 
 .custom-table .ant-pagination-item-link, .custom-table .ant-pagination-item  {
   background-color: transparent;
-  border-color: #7e96b8;
+  border-color: #000;
 }
 
 .custom-table .ant-table-tbody > tr.ant-table-placeholder:hover > td {
@@ -142,7 +142,7 @@ body {
 }
 
 .read-only span, .read-only p, .read-only h1 {
-  color: #fff !important;
+  color: #000 !important;
   font-family: Roboto, Microsoft JhengHei, serif;
   font-size: 16px;
 }
@@ -169,28 +169,28 @@ body {
 }
 
 .custom-table .anticon  {
-  color: #7e96b8;
+  color: #000;
   transform: translateY(-20%);
 }
 
 .custom-table .ant-pagination-item a {
-  color: #7e96b8 !important;
+  color: #000 !important;
 }
 
 .custom-modal .ant-modal-content {
   background-color: transparent;
-  /* border: 1.5px solid #fafafa; */
+  /* border: 1.5px solid #000; */
   /* border-radius: 50%; */
 }
 
 .custom-modal .ant-modal-header {
-  background-color: #0e131d;
-  border-color: #7e96b8;
+  background-color: #fff;
+  border-color: #fff;
   padding: 20px 40px;
 }
 
 .custom-modal .ant-modal-title {
-  color: #fff
+  color: #000
 }
 
 
@@ -199,7 +199,7 @@ body {
 }
 
 .custom-input svg {
-  color: #fff;
+  color: #000;
 }
 
 /* .related-event-slider .slick-track {
@@ -212,37 +212,37 @@ body {
 
 
 .custom-button{
-  color: #fff;
+  color: #000;
   font-weight: 700;
   background-color: transparent;
-  border-color: #fff;
+  border-color: #000;
 }
 
-.custom-button:hover {
-  color: #0e131d !important;
-  background-color: #fff !important;
+/* .custom-button:hover {
+  color: #fff !important;
+  background-color: #000 !important;
   border-color: transparent !important;
-}
+} */
 
 .custom-button:focus {
-  color: #fff;
-  border-color: #fff;
+  color: #000;
+  border-color: #000;
   background-color: transparent;
 }
 
 .custom-font {
   font-size: 12px;
-  color: #fff;
+  color: #000;
   transform: scale(0.5);
 }
 
 .custom-picker {
   border: none !important;
-  border-bottom: 1px solid #fff !important;
+  border-bottom: 1px solid #000 !important;
 }
 
 .custom-picker input {
-  color: #fff !important;
+  color: #000 !important;
   font-weight: bold;
 }
 
@@ -252,9 +252,9 @@ body {
 }
 
 .ticket-col {
-  color: #ffffff;
-  background-color: #24a0ed;
-  border: 1px solid #24a0ed;
+  color: #000000;
+  background-color: #000;
+  border: 1px solid #000;
   border-radius: 5px;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
@@ -302,11 +302,15 @@ body {
 
 
 .ticket-col:hover {
-  background-color: #1f3340 !important;
-  border: 1px solid #1f3340 !important;
+  background-color: #000 !important;
+  border: 1px solid #000 !important;
   cursor: pointer;
 }
 
 .ticket-row-divider {
   margin: 20px;
+}
+
+p, h1, h2, h3, h4, h5, span, a, button, input {
+  color: #2b2b2b
 }

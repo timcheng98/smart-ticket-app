@@ -151,7 +151,8 @@ const StripPayment = ({
 						style={{
 							marginTop: 20,
 							width: '100%',
-							background: 'linear-gradient(90deg,#0e131d,#060a10 90.65%)',
+							background: '#fff',
+							borderColor: '#000',
 							color: '#fff',
 							height: 50,
 							fontWeight: 'bold',

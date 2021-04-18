@@ -1,10 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Input, Button, Row, Col, Form, Tabs, notification } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import * as Service from '../../src/core/Service';
 import AppLayout from '../components/AppLayout';
-import { setUser, setAuth } from '../redux/actions/common';
 
 const { TabPane } = Tabs;
 
@@ -16,7 +13,7 @@ const Sign = () => {
 					<Tabs
 						centered
 						size='large'
-						tabBarStyle={{ color: '#fff', fontWeight: 'bold' }}
+						tabBarStyle={{ color: '#000', fontWeight: 'bold' }}
 					>
 						<TabPane tab='Login' key='1'>
 							<Login />
@@ -33,21 +30,10 @@ const Sign = () => {
 
 const Login = () => {
 	const [form] = Form.useForm();
-	const dispatch = useDispatch();
 	const history = useHistory();
-	// useEffect(() => {
-	// 	onFinish()
-	// }, [])
 
 	const onFinish = async (formData) => {
-		let result = await Service.call('post', '/api/login/user', formData);
-		console.log('result', result);
-		if (result.status < 1) {
-			return notification.warning({ message: result.errorMessage });
-		}
 		notification.success({ message: 'Sucessful Login.' });
-		dispatch(setAuth(true));
-		dispatch(setUser(result));
 		history.push('/account');
 	};
 
@@ -100,24 +86,10 @@ const Login = () => {
 
 const Register = () => {
 	const [form] = Form.useForm();
-	const dispatch = useDispatch();
 	const history = useHistory();
 
 	const onFinish = async (formData) => {
-		console.log(formData);
-		let result = await Service.call('post', '/api/user/register', formData);
-		if (result.status < 1) {
-			return notification.warning({ message: result.errorMessage });
-		}
-		notification.success({ message: 'Sucessful Registered.' });
-		localStorage.setItem('keystore', JSON.stringify(result));
-
-		result = await Service.call('post', '/api/login/user', formData);
-		if (result.status < 1) {
-			return notification.warning({ message: result.errorMessage });
-		}
-		dispatch(setAuth(true));
-		dispatch(setUser(result));
+		notification.success({ message: 'Sucessful Register.' });
 		history.push('/account');
 	};
 
@@ -193,13 +165,6 @@ const Register = () => {
 									className='custom-input'
 								/>
 							</Form.Item>
-						</Col>
-						<Col>
-							<span className='custom-font'>
-								Your personal data will be used to upport and improve your
-								experience on this website. For details, please refer to the{' '}
-								<u>Privacy Policy</u>.
-							</span>
 						</Col>
 						<Col span={24}>
 							<Button

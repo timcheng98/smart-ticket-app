@@ -24,7 +24,7 @@ const NotFound = () => {
 								type='primary'
 								style={{
 									backgroundColor: 'transparent',
-									borderColor: '#fff',
+									borderColor: '#000',
 									color: '#fff',
 								}}
 							>
